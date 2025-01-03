@@ -14,7 +14,7 @@
 - 利用Smack库实现了XMPP协议的聊天功能[Smack 库地址](https://github.com/igniterealtime/Smack)
 
 #### 实现的功能
-> 登陆时如果服务器是国外的可能会用时一二十秒。还会不稳定。
+> 登陆时如果服务器是国外的可能会用时一二十秒。会不稳定。
 - 登陆、注册（注册得看服务器是否开放了注册，建议去对应的平台上注册）
 - 单聊、群聊、群成员的管理等
 - 添加好友、好友管理等
@@ -31,3 +31,17 @@
 - [yax.im](https://yaxim.org/yax.im/) ([Policy](https://yaxim.org/yax.im/tos/))
 - [SUChat.org – Servidor XMPP](https://www.suchat.org/)
 - 也可以自己搭建服务端，有很多开源服务端比如`tigase` `jabber`等
+
+#### 一些截图
+
+<img src="https://github.com/user-attachments/assets/9fd85208-b6cf-4ba8-aa22-3f40582d145f" alt="登录" title="登录" style="width: 20%; display: block; margin: auto;" />
+<img src="https://github.com/user-attachments/assets/d57562a0-8bf3-4454-93a1-d5b9cc3dd8c1" alt="联系人" title="联系人" style="width: 20%; display: block; margin: auto;" />
+<img src="https://github.com/user-attachments/assets/446ba690-8c28-42f3-8fd6-41e9535aaa20" alt="聊天界面" title="聊天界面" style="width: 20%; display: block; margin: auto;" />
+<img src="https://github.com/user-attachments/assets/3deed7dc-56d9-4d3f-a6c5-73da21b6178d" alt="设置" title="设置" style="width: 20%; display: block; margin: auto;" />
+<img src="https://github.com/user-attachments/assets/60770ca3-027d-499e-ab7b-f4ce4ee8a564" alt="会话" title="会话" style="width: 20%; display: block; margin: auto;" />
+<img src="https://github.com/user-attachments/assets/e8f164a8-3e58-49c7-9db2-b8dff0997909" alt="发现频道" title="发现频道" style="width: 20%; display: block; margin: auto;" />
+
+
+
+
+

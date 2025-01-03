@@ -60,7 +60,7 @@
             android:layout_height="@dimen/dp_18"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_10"
-            android:layout_toLeftOf="@id/cv_chat_content"
+            android:layout_toLeftOf="@id/cv_card_info"
             android:visibility="gone"
             tools:visibility="gone" />
 
@@ -70,7 +70,7 @@
             android:layout_height="@dimen/dp_18"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_10"
-            android:layout_toLeftOf="@id/cv_chat_content"
+            android:layout_toLeftOf="@id/cv_card_info"
             android:src="@drawable/msg_state_failed_resend"
             android:visibility="gone"
             tools:visibility="visible" />

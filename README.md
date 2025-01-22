@@ -3,7 +3,8 @@
 > 本项目是为了学习 XMPP 协议而写的一个简单的app，实现了一些基本的聊天功能，为了使用习惯，UI上参照了某著名聊天。
 
 #### 下载链接
-[kptx-pgyer](https://www.pgyer.com/app/publishSuccess/cbf87c49211eb26c55a8e0fac617cfc3)
+https://wwhq.lanzouu.com/ijaxG2jtnqpa
+密码:6ux4
 #### 推荐客户端
 
 - [Conversations](https://codeberg.org/iNPUTmice/Conversations) 稳定性好，功能完善，更新及时。只是UI操作和国内的聊天软件不同，需要习惯。

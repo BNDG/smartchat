@@ -33,6 +33,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.blankj.utilcode.util.StringUtils;
+import com.bndg.smack.OmemoHelper;
+import com.bndg.smack.SmartCommHelper;
+import com.bndg.smack.SmartIMClient;
+import com.bndg.smack.callback.IChatRoomCallback;
+import com.bndg.smack.callback.IUserInfoCallback2;
+import com.bndg.smack.entity.SmartMessage;
+import com.bndg.smack.enums.SmartContentType;
+import com.bndg.smack.enums.SmartConversationType;
+import com.bndg.smack.extensions.base.IExtension;
+import com.bndg.smack.model.SmartUserInfo;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildLongClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -129,18 +139,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
-
-import com.bndg.smack.OmemoHelper;
-import com.bndg.smack.SmartCommHelper;
-import com.bndg.smack.SmartIMClient;
-import com.bndg.smack.callback.IChatRoomCallback;
-import com.bndg.smack.callback.IUserInfoCallback2;
-import com.bndg.smack.entity.SmartMessage;
-import com.bndg.smack.enums.SmartContentType;
-import com.bndg.smack.enums.SmartConversationType;
-import com.bndg.smack.extensions.base.IExtension;
-import com.bndg.smack.model.SmartUserInfo;
-
 import io.reactivex.rxjava3.functions.Consumer;
 
 /**
@@ -2408,7 +2406,9 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
         MessageDao.getInstance().getMessagesByConversationIdLoadMore(ChatActivity.this, conversationId, pageCount, new MessageDao.MessageDaoCallback() {
             @Override
             public void getMessagesByConversationId(List<ChatMessage> chatMessages) {
-                smartMessageAdapter.addData(chatMessages);
+                for (ChatMessage chatMessage : chatMessages) {
+                    smartMessageAdapter.addData(chatMessage);
+                }
                 if (chatMessages.size() < MessageDao.PAGE_SIZE || pageCount == 0) {
                     Trace.d("run: 没有更多了");
                     //如果不够一页,显示没有更多数据布局

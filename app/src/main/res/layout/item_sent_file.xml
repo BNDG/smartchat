@@ -28,7 +28,7 @@
             android:scaleType="fitXY"
             android:src="@mipmap/default_user_avatar" />
 
-        <com.cxd.chatview.moudle.ChatView xmlns:chat="http://schemas.android.com/apk/res-auto"
+        <com.hjq.demo.widget.ChatView xmlns:chat="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cv_file_content"
             android:layout_toLeftOf="@+id/sdv_avatar"
             style="@style/chat_sent_bubble">
@@ -66,7 +66,7 @@
                 android:textColor="@color/text_gray_color"
                 android:textSize="@dimen/sp_10"
                 tools:text="11.49KB" />
-        </com.cxd.chatview.moudle.ChatView>
+        </com.hjq.demo.widget.ChatView>
 
         <ProgressBar
             android:id="@+id/pb_sending"

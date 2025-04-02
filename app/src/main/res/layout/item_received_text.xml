@@ -59,7 +59,7 @@
                 android:textSize="@dimen/chat_nickname_text_size"
                 tools:text="libai13888888888" />
 
-            <com.cxd.chatview.moudle.ChatView xmlns:chat="http://schemas.android.com/apk/res-auto"
+            <com.hjq.demo.widget.ChatView xmlns:chat="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cv_chat_content"
                 style="@style/chat_receive_bubble">
 
@@ -76,7 +76,7 @@
                     android:textColorLink="@color/text_link_color"
                     android:textColor="@color/chat_content_text"
                     android:textSize="@dimen/chat_msg_text_size" />
-            </com.cxd.chatview.moudle.ChatView>
+            </com.hjq.demo.widget.ChatView>
 
         </LinearLayout>
 

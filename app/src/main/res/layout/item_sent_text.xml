@@ -29,7 +29,7 @@
             android:layout_marginRight="@dimen/margin_chat_activity"
             android:src="@mipmap/default_user_avatar"/>
 
-        <com.cxd.chatview.moudle.ChatView xmlns:chat="http://schemas.android.com/apk/res-auto"
+        <com.hjq.demo.widget.ChatView xmlns:chat="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cv_chat_content"
             android:layout_toLeftOf="@+id/sdv_avatar"
             style="@style/chat_sent_bubble">
@@ -47,7 +47,7 @@
                 android:textColorLink="@color/text_link_color"
                 android:textColor="@color/common_item_black"
                 android:textSize="@dimen/chat_msg_text_size" />
-        </com.cxd.chatview.moudle.ChatView>
+        </com.hjq.demo.widget.ChatView>
 
         <ProgressBar
             android:id="@+id/pb_sending"

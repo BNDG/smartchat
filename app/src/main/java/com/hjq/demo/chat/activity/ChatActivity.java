@@ -258,6 +258,7 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
     private boolean isFromSearchRecord;
     private String lastOriginId;
     private long lastTimestamp;
+    private boolean isLoadingMore;
 
     public static void start(Context context, String conversationType,
                              String conversationId, String conversationTitle) {
@@ -2390,19 +2391,16 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
 
     @Override
     public void onLoadMore() {
+        if (isLoadingMore) {
+            return;
+        }
         // 向下拉取消息
-        Trace.d("onLoadMore: " + pageCount);
         pageCount--;
+        Trace.d("onLoadMore: 加载第 " + pageCount + " 页");
         if (pageCount < 0) {
             return;
         }
-        if (pageCount == 0) {
-            smartMessageAdapter.getLoadMoreModule().setEnableLoadMore(false);
-            smartMessageAdapter.getLoadMoreModule().loadMoreEnd(true);
-        } else {
-            smartMessageAdapter.getLoadMoreModule().setAutoLoadMore(true);
-            smartMessageAdapter.getLoadMoreModule().setEnableLoadMore(true);
-        }
+        isLoadingMore = true;
         MessageDao.getInstance().getMessagesByConversationIdLoadMore(ChatActivity.this, conversationId, pageCount, new MessageDao.MessageDaoCallback() {
             @Override
             public void getMessagesByConversationId(List<ChatMessage> chatMessages) {
@@ -2415,8 +2413,12 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                     smartMessageAdapter.getLoadMoreModule().loadMoreEnd(true);
                     smartMessageAdapter.getLoadMoreModule().setEnableLoadMore(false);
                 } else {
+                    Trace.d("run: 还有下一页");
+                    smartMessageAdapter.getLoadMoreModule().setAutoLoadMore(true);
+                    smartMessageAdapter.getLoadMoreModule().setEnableLoadMore(true);
                     smartMessageAdapter.getLoadMoreModule().loadMoreComplete();
                 }
+                isLoadingMore = false;
             }
         });
     }

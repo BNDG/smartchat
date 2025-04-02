@@ -274,7 +274,6 @@ dependencies {
      */
     //数据库
     implementation 'com.github.open-android:pinyin4j:2.5.0'
-    implementation 'com.github.bigdongdong:ChatView:2.0' //添加依赖
 
     // app数字显示图标
     implementation "me.leolin:ShortcutBadger:1.1.22@aar"

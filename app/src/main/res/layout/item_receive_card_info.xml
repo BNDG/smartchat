@@ -49,7 +49,7 @@
                 android:visibility="gone"
                 tools:text="libai13888888888" />
 
-            <com.cxd.chatview.moudle.ChatView xmlns:chat="http://schemas.android.com/apk/res-auto"
+            <com.hjq.demo.widget.ChatView xmlns:chat="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cv_card_info"
                 style="@style/chat_receive_bubble">
 
@@ -70,7 +70,7 @@
                     android:layout_height="@dimen/dp_50"
                     android:layout_toRightOf="@id/tv_contact_name"
                     android:src="@mipmap/default_user_avatar" />
-            </com.cxd.chatview.moudle.ChatView>
+            </com.hjq.demo.widget.ChatView>
 
         </LinearLayout>
     </RelativeLayout>

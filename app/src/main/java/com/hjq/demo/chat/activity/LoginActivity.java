@@ -120,13 +120,13 @@ public class LoginActivity extends ChatBaseActivity implements View.OnClickListe
     }
 
     private void xmppLogin(String tusername, String tpassword, String unionid) {
-        PreferencesUtil.getInstance().setUserId(SmartCommHelper.getInstance().getSmartIMUserId(tusername));
+        PreferencesUtil.getInstance().setUserId(SmartCommHelper.getInstance().getUserIdByAccount(tusername));
         SmartIMClient.getInstance().connectAndLogin(tusername, tpassword, new ISmartCallback() {
             @Override
             public void onSuccess() {
                 // 登录成功，可以在这里处理后续操作，如发送消息、监听聊天室等
                 CryptoUtil.encryptAndSaveCredentials2(tusername, tpassword);
-                String imUserId = SmartCommHelper.getInstance().getSmartIMUserId(tusername);
+                String imUserId = SmartCommHelper.getInstance().getUserIdByAccount(tusername);
                 PreferencesUtil.getInstance().setLogin(true);
                 Trace.d("登录成功 Connected and logged in successfully. imUserId = " + imUserId);
                 DBManager.Companion.getInstance(LoginActivity.this)

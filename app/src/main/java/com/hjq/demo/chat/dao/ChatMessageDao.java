@@ -89,4 +89,7 @@ public interface ChatMessageDao {
 
     @Query("UPDATE chat_message SET isRead = 1 WHERE conversationId = :conversationId and timestamp < :timestamp and isRead = 0 and belongAccount = :belongAccount and fromUserId <> :belongAccount ")
     void markAsReadAtConversation(String conversationId, long timestamp, String belongAccount);
+
+    @Query("UPDATE chat_message SET status = '3' WHERE belongAccount = :belongAccount and status = '1'")
+    void updateSendingToFailed(String belongAccount);
 }

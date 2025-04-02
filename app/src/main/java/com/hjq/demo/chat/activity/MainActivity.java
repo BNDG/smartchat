@@ -300,6 +300,8 @@ public class MainActivity extends ChatBaseActivity implements
                 mContactsFragment.refreshNewFriendsUnreadNum();
                 // 刷新新好友申请未读数量
                 refreshFriendRequestUnreadCount();
+                // 把数据库中发送中的消息改为发送失败
+                MessageDao.getInstance().updateSendingToFailed();
             }
         });
         Trace.w("initData: end >>>>>>> ");
@@ -321,8 +323,7 @@ public class MainActivity extends ChatBaseActivity implements
                     @Override
                     public void getUser(@Nullable User userById) {
                         if (userById != null) {
-                            String userNickName = nickname == null ? SmartCommHelper.getAccountFromJid(myUserId) : nickname;
-                            userById.setUserNickName(userNickName);
+                            userById.setUserNickName(CheckUtil.getNotNullString(nickname));
                             DBManager.Companion.getInstance(MainActivity.this)
                                     .saveOrUpdateContact(userById)
                                     .to(RxLife.to(MainActivity.this))

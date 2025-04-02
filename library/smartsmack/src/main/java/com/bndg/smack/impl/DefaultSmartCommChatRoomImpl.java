@@ -125,8 +125,8 @@ public class DefaultSmartCommChatRoomImpl extends BaseXmppImpl implements ISmart
         // 查询支持的聊天室服务
         SmartCommHelper.getInstance().discoverMultiUserChatSupport(new IServiceCallback() {
             @Override
-            public void onSuccess(String service) {
-                String groupJid = SmartCommHelper.getInstance().generateUniqueName(service);
+            public void onSuccess(String groupServer) {
+                String groupJid = SmartCommHelper.getInstance().generateGroupId(groupServer);
                 Disposable subscribe = Single.fromCallable(new Callable<MultiUserChat>() {
                             @Override
                             public MultiUserChat call() throws Exception {

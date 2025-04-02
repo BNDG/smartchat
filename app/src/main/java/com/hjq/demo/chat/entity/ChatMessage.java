@@ -535,7 +535,7 @@ public class ChatMessage implements MultiItemEntity {
     public boolean getIsSent() {
         // todo 群聊的时候 昵称相同就是自己 因为离线消息返回的id
         if (isGroupMsg()) {
-            return SmartCommHelper.getInstance().getAccount().equals(User.getAccountById(getFromUserId()));
+            return SmartCommHelper.getInstance().getUserId().equals(getFromUserId());
         }
         return PreferencesUtil.getInstance().getUserId().equals(fromUserId);
     }

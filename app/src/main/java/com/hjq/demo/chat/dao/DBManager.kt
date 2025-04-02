@@ -133,7 +133,6 @@ class DBManager(context: Context) {
      * 保存会话
      */
     fun saveConversation(conversationInfo: ConversationInfo): Completable? {
-        Trace.d("saveConversation: 保存会话>>>> ${conversationInfo.conversationId} and id =>> ${conversationInfo.id}")
         return extraCompletable(mDb?.chatConversationDao()?.insertConversation(conversationInfo))
     }
 

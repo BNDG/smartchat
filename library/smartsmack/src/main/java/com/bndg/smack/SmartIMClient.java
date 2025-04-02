@@ -167,7 +167,7 @@ public class SmartIMClient {
     private PublishSubject<LoginEventInfo> mySubject = PublishSubject.create();
 
     private SmartIMClient() {
-        // 5秒内获取最新状态判断是否另一端登陆 5秒是考虑服务器响应慢
+        // 5秒后获取最新状态判断是否在另一端登陆 5秒避免两个服务器发布用户状态的冲突
         Disposable subscribe = mySubject
                 .debounce(5000, TimeUnit.MILLISECONDS)
                 .observeOn(Schedulers.io())
@@ -206,13 +206,15 @@ public class SmartIMClient {
         this.simpleMsgListener = iMsgProcessor;
     }
 
-
     public ISimpleMsgListener getSimpleMsgListener() {
         return simpleMsgListener;
     }
 
-
     public IChatRoomCallback getChatRoomListener() {
+        if(chatRoomListener == null) {
+            chatRoomListener = new IChatRoomCallback() {
+            };
+        }
         return chatRoomListener;
     }
 
@@ -235,55 +237,6 @@ public class SmartIMClient {
 
 
     /**
-     * 加入群聊成功
-     * 主线程
-     *
-     * @param multiUserChat
-     */
-    public void joinRoomSuccess(MultiUserChat multiUserChat) {
-        String groupId = multiUserChat.getRoom().toString();
-        // 成功加入房间后的处理逻辑 todo 需要发出通知吗如果不在前台的话
-        // 创建或更新会话
-       /* getXmppChatRoomManager().getRoomInfo(multiUserChat, new IChatRoomCallback() {
-            @Override
-            public void getRoomInfo(RoomInfo roomInfo) {
-                SmartTrace.d("roominfo" + roomInfo);
-                XmppManager.getInstance().getChatRoomListener().notifyJoinRoom(multiUserChat, roomInfo);
-            }
-
-            @Override
-            public void getRoomInfoFailed() {
-                SmartTrace.d("获取群名称失败");
-                XmppManager.getInstance().getChatRoomListener().notifyJoinRoom(multiUserChat, null);
-            }
-        });*/
-        // 更新群成员
-        /*  getXmppChatRoomManager().getRoomMembers(groupId, new IGroupMemberCallback() {
-            @Override
-            public void onSuccess(List<SmartUserInfo> smartUserInfoList) {
-                XmppManager.getInstance().getChatRoomListener().updateRoomMembers(XmppService.this, smartUserInfoList, groupId);
-            }
-        });*/
-        // 更新群头像
-    /* getSmartCommUserManager().getUserVCard(multiUserChat.getRoom().toString(), new IUserVCardCallback() {
-            @Override
-            public void onSuccess(VCard userVcard) {
-                if (getChatRoomListener() != null) {
-                    getChatRoomListener().getRoomAvatar(userVcard, groupId);
-                }
-            }
-
-            @Override
-            public void onFailed(int code, String desc) {
-
-            }
-        });*/
-       /* if (getChatRoomListener() != null) {
-            getChatRoomListener().joinRoomSuccess(multiUserChat);
-        }*/
-    }
-
-    /**
      * 加入群聊失败
      *
      * @param code
@@ -291,7 +244,6 @@ public class SmartIMClient {
      */
     public void joinRoomFailed(int code, String groupId, String reason) {
         SmartTrace.d("joinRoomFailed");
-        getChatRoomListener().joinRoomFailed(code, groupId, reason);
     }
 
     public String getString(int res_id) {
@@ -1262,9 +1214,15 @@ public class SmartIMClient {
                                 .removeSubscribeListener(mAddFriendMessageListener);
                         smartCommHeartbeat.stopHeartbeat();
                         SmartCommHelper.getInstance().setAccount("");
-                        smartCommChatRoomManager.release();
-                        smartCommUserManager.release();
-                        smartCommFriendManager.release();
+                        if (smartCommChatRoomManager != null) {
+                            smartCommChatRoomManager.release();
+                        }
+                        if (smartCommUserManager != null) {
+                            smartCommUserManager.release();
+                        }
+                        if (smartCommFriendManager != null) {
+                            smartCommFriendManager.release();
+                        }
                         SmartCommHelper.getInstance().release();
                         iSmartCallback.onSuccess();
                         connection.disconnect();

@@ -1859,6 +1859,9 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
      * 发送图片
      */
     private void compressAndSendImg() {
+        if(mFileSendQueue.isEmpty()) {
+            return;
+        }
         String filePath = mFileSendQueue.removeFirst();
         if (TextUtils.isEmpty(filePath)) {
             return;
@@ -1867,6 +1870,7 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
         if (filePath.toLowerCase().endsWith(".gif") || isOriginalImg) {
             String absolutePath = new File(filePath).getAbsolutePath();
             uploadFile(absolutePath, SmartContentType.IMAGE, "");
+            compressAndSendImg();
         } else {
             Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
             options.quality = 85;
@@ -1885,6 +1889,7 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                             } else {
                                 uploadFile(outfile, SmartContentType.IMAGE, "");
                             }
+                            compressAndSendImg();
                         }
                     });
         }
@@ -1932,6 +1937,7 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
         if (TextUtils.isEmpty(originId)) {
             imageFileBean.originId = prepareFileMsg(outfilePath, SmartContentType.IMAGE, imageFileBean);
         } else {
+            // 重发消息的情况 已经有originId
             imageFileBean.originId = originId;
         }
         Intent intent = new Intent(ChatActivity.this, UploadService.class);
@@ -2132,7 +2138,7 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                 // 先匹配当前聊天消息
                 if (ChatMessage.isFileType(smartMsg.getMessageType())) {
                     refreshFileMsg(originId, "", smartMsg.getMessageContent());
-                    compressAndSendImg();
+//                    compressAndSendImg();
                 } else {
                     // 转发到本聊天的情况
                     dbMsg.setStatus(MessageStatus.SEND_SUCCESS.value());
@@ -2148,7 +2154,7 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
         chatMessage.setMessageContent(smartMsg.getMessageContent());
         smartMessageAdapter.notifyItemChanged(messageIndex);
         if (ChatMessage.isFileType(smartMsg.getMessageType())) {
-            compressAndSendImg();
+//            compressAndSendImg();
         }
     }
 
@@ -2198,7 +2204,7 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                 // 先匹配当前聊天消息
                 if (ChatMessage.isFileType(simMessage.getMessageType())) {
                     refreshFileMsg(originId, "", simMessage.getMessageContent());
-                    compressAndSendImg();
+//                    compressAndSendImg();
                 } else {
                     // 转发到本聊天的情况
                     dbMsg.setStatus(MessageStatus.SEND_SUCCESS.value());
@@ -2214,7 +2220,7 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
         chatMessage.setMessageContent(simMessage.getMessageContent());
         smartMessageAdapter.notifyItemChanged(messageIndex);
         if (ChatMessage.isFileType(simMessage.getMessageType())) {
-            compressAndSendImg();
+//            compressAndSendImg();
         }
     }
 

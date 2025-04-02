@@ -240,6 +240,7 @@ public class DefaultSmartCommMsgImpl extends BaseXmppImpl implements ISmartCommM
                         SmartTrace.d(
                                 "发送单聊消息 " + SmartIMClient.getInstance().getConnection(),
                                 " <toContactJid> " + toContactJid);
+                        // 判断是否是好友 单向好友也不允许发送？
                         boolean isFriend = SmartIMClient.getInstance().getFriendshipManager().checkIsFriend(toContactJid);
                         if (!isFriend) {
                             throw new SIMNotFriendException();

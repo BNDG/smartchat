@@ -392,6 +392,11 @@ public class MessageDao {
         Disposable subscribe = Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
+                        ChatMessage message = MessageDao.getInstance()
+                                .getLatestMessageByConversationId(chatMessage.getConversationId());
+                        if (null != message) {
+                            chatMessage.setLastTimeStamp(message.getTimestamp());
+                        }
                         AppDatabase.getInstance(ActivityManager.getInstance().getApplication()).messageDao().saveChatMessage(chatMessage);
                         return true;
                     }
@@ -624,6 +629,19 @@ public class MessageDao {
                                         PreferencesUtil.getInstance().getUserId());
                         SmartIMClient.getInstance().getSmartCommMsgManager()
                                 .sendReceipt(chatMessage.getFromUserId(), chatMessage.getSmartMessageId());
+                        return true;
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
+
+    public void updateSendingToFailed() {
+        Disposable subscribe = Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() {
+                        AppDatabase.getInstance(ActivityManager.getInstance().getApplication()).messageDao()
+                                .updateSendingToFailed(PreferencesUtil.getInstance().getUserId());
                         return true;
                     }
                 }).subscribeOn(Schedulers.io())

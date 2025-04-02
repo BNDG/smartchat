@@ -69,6 +69,8 @@ import com.bndg.smack.muc.RoomState;
 import com.bndg.smack.service.SmartIMService;
 import com.bndg.smack.utils.NetworkStateListener;
 import com.bndg.smack.utils.SmartTrace;
+import com.bndg.smack.utils.StorageUtils;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
@@ -250,18 +252,30 @@ public class SmartCommHelper {
     public void setPassword(String passWord) {
         SPUtils.getInstance(SmartConstants.SP_NAME).put(SmartConstants.PASS_WORD, passWord);
     }
-
+    /**
+     * 设置昵称缓存 key是账户名+NICKNAME
+     * @param nickName
+     */
     public void setNickName(String nickName) {
-        SPUtils.getInstance(SmartConstants.SP_NAME).put(getAccount() + SmartConstants.NICKNAME, nickName);
+        StorageUtils.getInstance(SmartConstants.SP_NAME).put(getUserId() + SmartConstants.NICKNAME, nickName);
     }
 
+    /**
+     * 获取IM的用户名 不包含域名
+     * @return
+     */
     public String getAccount() {
-        return SPUtils.getInstance(SmartConstants.SP_NAME).getString(SmartConstants.USER_NAME);
+        return StorageUtils.getInstance(SmartConstants.SP_NAME).getString(SmartConstants.USER_NAME);
     }
 
+    /**
+     * 设置我在群聊中的账户Id
+     * @param groupId
+     * @param account
+     */
     public void setAccountInGroup(String groupId, String account) {
-        int hashKey = (getAccount() + groupId).hashCode();
-        SPUtils.getInstance(SmartConstants.SP_NAME).put(hashKey + SmartConstants.NICKNAME, account);
+        int hashKey = (getUserId() + groupId).hashCode();
+        StorageUtils.getInstance(SmartConstants.SP_NAME).put(hashKey + SmartConstants.NICKNAME, account);
     }
 
     /**
@@ -271,9 +285,10 @@ public class SmartCommHelper {
      * @return
      */
     public String getAccountIdInGroup(String groupId) {
-        int hashKey = (getAccount() + groupId).hashCode();
-        String nickName = SPUtils.getInstance(SmartConstants.SP_NAME).getString(hashKey + SmartConstants.NICKNAME);
+        int hashKey = (getUserId() + groupId).hashCode();
+        String nickName = StorageUtils.getInstance(SmartConstants.SP_NAME).getString(hashKey + SmartConstants.NICKNAME);
         if (TextUtils.isEmpty(nickName)) {
+            // 如果没有昵称 默认是账户名
             nickName = getAccount();
         }
         return nickName;
@@ -284,11 +299,11 @@ public class SmartCommHelper {
     }
 
     public String getPassword() {
-        return SPUtils.getInstance(SmartConstants.SP_NAME).getString(SmartConstants.PASS_WORD);
+        return StorageUtils.getInstance(SmartConstants.SP_NAME).getString(SmartConstants.PASS_WORD);
     }
 
     public String getNickname() {
-        String nickName = SPUtils.getInstance(SmartConstants.SP_NAME).getString(getAccount() + SmartConstants.NICKNAME);
+        String nickName = StorageUtils.getInstance(SmartConstants.SP_NAME).getString(getUserId() + SmartConstants.NICKNAME);
         if (TextUtils.isEmpty(nickName)) {
             return getAccount();
         } else {
@@ -302,21 +317,21 @@ public class SmartCommHelper {
      * @param serviceName
      * @return
      */
-    public String generateUniqueName(String serviceName) {
+    public String generateGroupId(String serviceName) {
         String uniqueSuffix = UUID.randomUUID().toString().substring(0, 8); // 使用UUID生成唯一的后缀
         return getAccount() + "-" + uniqueSuffix + "@" + serviceName;
     }
 
+
     /**
-     * 获取完整的jid形式 即EntryBareJid
+     * 通过用户名获取userid
      *
-     * @param nanoId
+     * @param account
      * @return
      */
-    public String getSmartIMUserId(String nanoId) {
-        return nanoId + "@" + SmartIMClient.getInstance().getSmartCommConfig().getDomainName();
+    public String getUserIdByAccount(String account) {
+        return account + "@" + SmartIMClient.getInstance().getSmartCommConfig().getDomainName();
     }
-
 
     /**
      * 检查是否在muc中 不准确

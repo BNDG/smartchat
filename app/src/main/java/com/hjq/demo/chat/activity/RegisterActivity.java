@@ -292,9 +292,9 @@ public class RegisterActivity extends ChatBaseActivity {
     private void registerSuccess(String mUsername, String mPassword, String unionid) {
         Trace.d(mUsername + ">>>>>>>onSuccess: 注册成功登录成功了，跳转MainActivity>>>>>>" + mPassword,
                 "nickname" + nickName);
-        PreferencesUtil.getInstance().setUserId(SmartCommHelper.getInstance().getSmartIMUserId(mUsername));
+        PreferencesUtil.getInstance().setUserId(SmartCommHelper.getInstance().getUserIdByAccount(mUsername));
         CryptoUtil.encryptAndSaveCredentials2(mUsername, mPassword);
-        String jid = SmartCommHelper.getInstance().getSmartIMUserId(mUsername);
+        String jid = SmartCommHelper.getInstance().getUserIdByAccount(mUsername);
         SmartUserInfo myInfo = new SmartUserInfo();
         myInfo.setUserAvatar(bitmapData);
         myInfo.setNickname(nickName);

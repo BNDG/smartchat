@@ -95,12 +95,12 @@ public class User {
     public User() {
     }
 
-    public static String getAccountById(String contackId) {
-        int index = contackId.indexOf("@");
+    public static String getAccountById(String contactId) {
+        int index = contactId.indexOf("@");
         if (index != -1) {
-            return contackId.substring(0, index);
+            return contactId.substring(0, index);
         } else {
-            return contackId;
+            return contactId;
         }
     }
 

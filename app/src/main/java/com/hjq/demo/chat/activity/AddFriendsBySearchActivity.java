@@ -115,15 +115,15 @@ public class AddFriendsBySearchActivity extends ChatBaseActivity {
     /**
      * 通过xmpp jid搜索用户 要求对方有名片
      *
-     * @param nanoId
+     * @param account
      * @param tNickname
      */
-    private void searchXmppUserByJid(String nanoId, String tNickname, String phoneData, String accountData) {
+    private void searchXmppUserByJid(String account, String tNickname, String phoneData, String accountData) {
         String imUserId;
-        if (!nanoId.contains("@")) {
-            imUserId = SmartCommHelper.getInstance().getSmartIMUserId(nanoId);
+        if (!account.contains("@")) {
+            imUserId = SmartCommHelper.getInstance().getUserIdByAccount(account);
         } else {
-            imUserId = nanoId;
+            imUserId = account;
         }
         SmartIMClient.getInstance().getSmartCommUserManager().getUserInfo(imUserId, new IUserInfoCallback2() {
             @Override

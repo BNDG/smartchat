@@ -1390,10 +1390,10 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                             // 页码 先判断消息在哪一页
                             int page = position / MessageDao.PAGE_SIZE;
                             // 计算行号在当前页
-                            int startOfPage = page * 40;
+                            int startOfPage = page * MessageDao.PAGE_SIZE;
                             // 当前页上的消息数量
                             int messagesOnCurrentPage =
-                                    Math.min(40, count - startOfPage);
+                                    Math.min(MessageDao.PAGE_SIZE, count - startOfPage);
                             // 倒序行号
                             int lineNumDesc =
                                     messagesOnCurrentPage - (position - startOfPage) - 1;

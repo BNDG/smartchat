@@ -10,6 +10,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.MessageView;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -251,6 +252,7 @@ public class DefaultSmartCommMsgImpl extends BaseXmppImpl implements ISmartCommM
                                 .to(toContactJid)
                                 .setBody(messageContent)
                                 .build();
+                        message.setType(Message.Type.chat);
                         for (IExtension element : extensions) {
                             message.addExtension(ElementFactory.createBaseExtensionElement(element));
                         }
@@ -393,56 +395,6 @@ public class DefaultSmartCommMsgImpl extends BaseXmppImpl implements ISmartCommM
                 transfer.sendFile(new File(filePath), "You won't believe this!");
         } catch (SmackException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * 获取离线消息
-     * 被xep弃用了
-     *
-     * @return
-     */
-    public void getHisMessage() {
-        if (SmartIMClient.getInstance().getConnection() == null)
-            return;
-        try {
-            //将用户状态设为离线
-            //            xmppService.getXmppUserManager().setOnLine(Presence.Type.unavailable);
-            OfflineMessageManager offlineManager = OfflineMessageManager.getInstanceFor(
-                    SmartIMClient.getInstance().getConnection());
-            List<Message> messageList = offlineManager.getMessages();
-            int count = offlineManager.getMessageCount();
-            if (count <= 0) {
-                return;
-            }
-            try {
-                boolean supportsFlexibleRetrieval = offlineManager.supportsFlexibleRetrieval();
-                if (supportsFlexibleRetrieval) {
-                    List<Message> messages = offlineManager.getMessages();
-                    for (Message message : messages) {
-                        // 处理离线消息
-                    }
-                }
-            } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException |
-                     SmackException.NotConnectedException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            for (Message message : messageList) {
-                SmartIMClient.getInstance().processMsg(false, message);
-                String fromUser = message.getFrom().toString();
-                /*if (offlineMsgs.containsKey(fromUser)) {
-                    offlineMsgs.get(fromUser).add(message);
-                } else {
-                    ArrayList<Message> temp = new ArrayList<>();
-                    temp.add(message);
-                    offlineMsgs.put(fromUser, temp);
-                }*/
-            }
-            offlineManager.deleteMessages();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            SmartIMClient.getInstance().getSmartCommUserManager().setOnLine(Presence.Type.available);
         }
     }
 

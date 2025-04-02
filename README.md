@@ -3,8 +3,8 @@
 > 本项目是为了学习 XMPP 协议而写的一个简单的app，实现了一些基本的聊天功能，为了使用习惯，UI上参照了某著名聊天。
 
 #### 下载链接
-https://wwhq.lanzouu.com/iiKtx2llxnsj
-密码:a08a
+https://wwhq.lanzouu.com/iH1Zi2sg1mid
+密码:fi54
 #### 推荐客户端
 
 - [Conversations](https://codeberg.org/iNPUTmice/Conversations) 稳定性好，功能完善，更新及时。只是UI操作和国内的聊天软件不同，需要习惯。
@@ -36,8 +36,9 @@ https://wwhq.lanzouu.com/iiKtx2llxnsj
 - 也可以自己搭建服务端，有很多开源服务端比如`tigase` `jabber`等
 
 #### 一些截图
+ > 测试账号 服务器：xabber.org 账号：bndg9527 密码：bndg9527
 
-<img src="https://github.com/user-attachments/assets/9fd85208-b6cf-4ba8-aa22-3f40582d145f" alt="登录" title="登录" style="width: 20%; display: block; margin: auto;" />
+<img src="./screenshot/login.jpg" alt="登录" title="登录" style="width: 20%; display: block; margin: auto;" />
 <img src="https://github.com/user-attachments/assets/d57562a0-8bf3-4454-93a1-d5b9cc3dd8c1" alt="联系人" title="联系人" style="width: 20%; display: block; margin: auto;" />
 <img src="https://github.com/user-attachments/assets/446ba690-8c28-42f3-8fd6-41e9535aaa20" alt="聊天界面" title="聊天界面" style="width: 20%; display: block; margin: auto;" />
 <img src="https://github.com/user-attachments/assets/3deed7dc-56d9-4d3f-a6c5-73da21b6178d" alt="设置" title="设置" style="width: 20%; display: block; margin: auto;" />

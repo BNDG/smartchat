@@ -3,7 +3,6 @@ package com.bndg.smack;
 import android.app.Application;
 import android.text.TextUtils;
 
-import com.blankj.utilcode.util.SPUtils;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -27,6 +26,7 @@ import java.util.HashMap;
 
 import com.bndg.smack.constant.SmartConstants;
 import com.bndg.smack.utils.SmartTrace;
+import com.bndg.smack.utils.StorageUtils;
 
 /**
  * @author r
@@ -111,7 +111,7 @@ public class OmemoHelper {
         try {
             omemoManager.purgeDeviceList();
             String string = omemoManager.getOwnFingerprint().toString();
-            SPUtils.getInstance(SmartConstants.SP_NAME).put(SmartCommHelper.getInstance().getAccount() + "_omemo_finger", string);
+            StorageUtils.getInstance(SmartConstants.SP_NAME).put(SmartCommHelper.getInstance().getAccount() + "_omemo_finger", string);
             // 会打印出我的设备的指纹
             SmartTrace.w("omemoManager: " + string);
         } catch (Exception e) {
@@ -131,23 +131,23 @@ public class OmemoHelper {
     }
 
     public String getFingerprint() {
-        return SPUtils.getInstance(SmartConstants.SP_NAME).getString(SmartCommHelper.getInstance().getAccount() + "_omemo_finger");
+        return StorageUtils.getInstance(SmartConstants.SP_NAME).getString(SmartCommHelper.getInstance().getAccount() + "_omemo_finger");
     }
 
     public boolean isEnableEncrypt(String conversationId) {
         // 获取是否开启加密 客户端控制还是？
         String key = SmartCommHelper.getInstance().getAccount() + "_omemo_" + conversationId;
-        return !TextUtils.isEmpty(SPUtils.getInstance(SmartConstants.SP_NAME).getString(
+        return !TextUtils.isEmpty(StorageUtils.getInstance(SmartConstants.SP_NAME).getString(
                 key));
     }
 
     public void enableEncrypt(String conversationId, boolean enabled) {
         String key = SmartCommHelper.getInstance().getAccount() + "_omemo_" + conversationId;
         if (enabled) {
-            SPUtils.getInstance(SmartConstants.SP_NAME).put(
+            StorageUtils.getInstance(SmartConstants.SP_NAME).put(
                     key, "true");
         } else {
-            SPUtils.getInstance(SmartConstants.SP_NAME).remove(
+            StorageUtils.getInstance(SmartConstants.SP_NAME).remove(
                     key);
         }
     }

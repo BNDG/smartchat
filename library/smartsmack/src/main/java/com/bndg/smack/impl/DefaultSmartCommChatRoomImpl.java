@@ -2,8 +2,6 @@ package com.bndg.smack.impl;
 
 import android.text.TextUtils;
 
-import com.blankj.utilcode.util.SPUtils;
-
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaCollector;
@@ -16,7 +14,6 @@ import org.jivesoftware.smack.filter.PossibleFromTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IqBuilder;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.StanzaError;
@@ -36,8 +33,6 @@ import org.jivesoftware.smackx.muc.ParticipantStatusListener;
 import org.jivesoftware.smackx.muc.RoomInfo;
 import org.jivesoftware.smackx.muc.packet.MUCOwner;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
-import org.jivesoftware.smackx.pubsub.PayloadItem;
-import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.form.Form;
@@ -90,6 +85,7 @@ import com.bndg.smack.muc.listener.MucParticipantStatusListener;
 import com.bndg.smack.utils.BitmapUtils;
 import com.bndg.smack.utils.SIMJsonUtil;
 import com.bndg.smack.utils.SmartTrace;
+import com.bndg.smack.utils.StorageUtils;
 import com.bndg.smack.utils.XmppUri;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -342,7 +338,7 @@ public class DefaultSmartCommChatRoomImpl extends BaseXmppImpl implements ISmart
      */
     @Override
     public void realJoinRoom(String groupId, IChatRoomCallback callback) {
-        String pwd = SPUtils.getInstance(SmartConstants.SP_NAME).getString(groupId + SmartConstants.PASS_WORD);
+        String pwd = StorageUtils.getInstance(SmartConstants.SP_NAME).getString(groupId + SmartConstants.PASS_WORD);
         realJoinRoomWithPWD(groupId, pwd, callback);
     }
 
@@ -417,7 +413,7 @@ public class DefaultSmartCommChatRoomImpl extends BaseXmppImpl implements ISmart
                                     multiUserChat.getRoom(),
                                     Resourcepart.from(SmartCommHelper.getInstance().getAccountIdInGroup(groupId)));
                     if (!TextUtils.isEmpty(pwd)) {
-                        SPUtils.getInstance(SmartConstants.SP_NAME).put(groupId + SmartConstants.PASS_WORD, pwd);
+                        StorageUtils.getInstance(SmartConstants.SP_NAME).put(groupId + SmartConstants.PASS_WORD, pwd);
                     }
                     RoomChat roomChat = SmartIMClient.getInstance().getSmartCommChatRoomManager().getRoomChat(groupId);
                     // roomChat一定不为空 因为监听器已经初始化
@@ -599,7 +595,7 @@ public class DefaultSmartCommChatRoomImpl extends BaseXmppImpl implements ISmart
                                         .getConnection())
                                 .getMultiUserChat(JidCreate.entityBareFrom(groupId));
                         addMucListener(muc);
-                        String pwd = SPUtils.getInstance(SmartConstants.SP_NAME).getString(groupId + SmartConstants.PASS_WORD);
+                        String pwd = StorageUtils.getInstance(SmartConstants.SP_NAME).getString(groupId + SmartConstants.PASS_WORD);
                         if (TextUtils.isEmpty(pwd)) {
                             muc.join(Resourcepart.from(nickName));
                         } else {
@@ -643,7 +639,7 @@ public class DefaultSmartCommChatRoomImpl extends BaseXmppImpl implements ISmart
 
     @Override
     public void putRecordMsg(String groupId, FetchEntity recordMsg) {
-        SPUtils.getInstance(SmartConstants.SP_NAME).put(groupId + SmartConstants.RECORD_KEY, SIMJsonUtil.serializeToJson(recordMsg));
+        StorageUtils.getInstance(SmartConstants.SP_NAME).put(groupId + SmartConstants.RECORD_KEY, SIMJsonUtil.serializeToJson(recordMsg));
     }
 
     /**
@@ -974,7 +970,7 @@ public class DefaultSmartCommChatRoomImpl extends BaseXmppImpl implements ISmart
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onSuccess -> {
                     SmartCommHelper.getInstance().executeWithDelay(SmartConstants.DELAY_250, () -> {
-                        SPUtils.getInstance(SmartConstants.SP_NAME).remove(groupId + SmartConstants.RECORD_KEY);
+                        StorageUtils.getInstance(SmartConstants.SP_NAME).remove(groupId + SmartConstants.RECORD_KEY);
                     });
                     if (onSuccess) {
                         roomCallback.leaveSuccess();
@@ -1213,7 +1209,7 @@ public class DefaultSmartCommChatRoomImpl extends BaseXmppImpl implements ISmart
 
     @Override
     public FetchEntity getFetchEntity(String conversationId) {
-        String jsonRecordMsg = SPUtils.getInstance(SmartConstants.SP_NAME).getString(conversationId + SmartConstants.RECORD_KEY);
+        String jsonRecordMsg = StorageUtils.getInstance(SmartConstants.SP_NAME).getString(conversationId + SmartConstants.RECORD_KEY);
         return SIMJsonUtil.deserializeByJson(jsonRecordMsg, FetchEntity.class);
     }
 

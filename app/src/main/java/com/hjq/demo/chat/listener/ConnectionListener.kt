@@ -18,15 +18,15 @@ object ConnectionListener :
         myConnectionListener.remove(listener)
     }
 
-    override fun onConnecting() {
+    override fun onServerConnecting() {
         for (listener in myConnectionListener) {
-            listener.onConnecting()
+            listener.onServerConnecting()
         }
     }
 
-    override fun onConnectSuccess() {
+    override fun onServerConnected() {
         for (listener in myConnectionListener) {
-            listener.onConnectSuccess()
+            listener.onServerConnected()
         }
     }
 
@@ -36,9 +36,9 @@ object ConnectionListener :
         }
     }
 
-    override fun onConnectFailed(desc: String?) {
+    override fun onServerConnectFailed(desc: String?) {
         for (listener in myConnectionListener) {
-            listener.onConnectFailed(desc)
+            listener.onServerConnectFailed(desc)
         }
     }
 
@@ -48,15 +48,15 @@ object ConnectionListener :
         }
     }
 
-    override fun imLoading() {
+    override fun onChatDataLoading() {
         for (listener in myConnectionListener) {
-            listener.imLoading()
+            listener.onChatDataLoading()
         }
     }
 
-    override fun imLoadingEnd() {
+    override fun onChatDataLoaded() {
         for (listener in myConnectionListener) {
-            listener.imLoadingEnd()
+            listener.onChatDataLoaded()
         }
     }
 

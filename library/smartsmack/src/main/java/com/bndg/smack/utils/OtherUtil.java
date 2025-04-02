@@ -1,7 +1,16 @@
 package com.bndg.smack.utils;
 
+import static android.Manifest.permission.ACCESS_NETWORK_STATE;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.text.TextUtils;
+
+
+import androidx.annotation.RequiresPermission;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,5 +57,47 @@ public class OtherUtil {
                 SmartCommHelper.getInstance().getApplication().getContentResolver(),
                 Settings.Secure.ANDROID_ID
         );
+    }
+
+    /**
+     * 获取AndroidID
+     * @return
+     */
+    @SuppressLint("HardwareIds")
+    public static String getAndroidID() {
+        String id = Settings.Secure.getString(
+                SmartCommHelper.getInstance().getApplication().getContentResolver(),
+                Settings.Secure.ANDROID_ID
+        );
+        if ("9774d56d682e549c".equals(id)) return "";
+        return id == null ? "" : id;
+    }
+
+    /**
+     * 判断字符串是否匹配正则
+     * @param regex
+     * @param input
+     * @return
+     */
+    public static boolean isMatch(final String regex, final CharSequence input) {
+        return input != null && input.length() > 0 && Pattern.matches(regex, input);
+    }
+    /**
+     * Return whether network is connected.
+     * <p>Must hold {@code <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />}</p>
+     *
+     * @return {@code true}: connected<br>{@code false}: disconnected
+     */
+    @RequiresPermission(ACCESS_NETWORK_STATE)
+    public static boolean isConnected() {
+        NetworkInfo info = getActiveNetworkInfo();
+        return info != null && info.isConnected();
+    }
+    @RequiresPermission(ACCESS_NETWORK_STATE)
+    private static NetworkInfo getActiveNetworkInfo() {
+        ConnectivityManager cm =
+                (ConnectivityManager) SmartCommHelper.getInstance().getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return null;
+        return cm.getActiveNetworkInfo();
     }
 }

@@ -611,7 +611,7 @@ public class MainActivity extends ChatBaseActivity implements
     }
 
     @Override
-    public void onConnecting() {
+    public void onServerConnecting() {
         post(new Runnable() {
             @Override
             public void run() {
@@ -622,7 +622,7 @@ public class MainActivity extends ChatBaseActivity implements
     }
 
     @Override
-    public void onConnectFailed(String desc) {
+    public void onServerConnectFailed(String desc) {
         post(new Runnable() {
             @Override
             public void run() {
@@ -638,7 +638,7 @@ public class MainActivity extends ChatBaseActivity implements
     }
 
     @Override
-    public void onConnectSuccess() {
+    public void onServerConnected() {
         Trace.w("连接服务器成功 onConnected: >>");
         post(new Runnable() {
             @Override
@@ -667,12 +667,12 @@ public class MainActivity extends ChatBaseActivity implements
     }
 
     @Override
-    public void imLoading() {
+    public void onChatDataLoading() {
         showDialog();
     }
 
     @Override
-    public void imLoadingEnd() {
+    public void onChatDataLoaded() {
         hideDialog();
     }
 

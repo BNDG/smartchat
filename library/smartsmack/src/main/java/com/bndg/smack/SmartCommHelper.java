@@ -4,8 +4,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.blankj.utilcode.util.NetworkUtils;
-import com.blankj.utilcode.util.SPUtils;
 
 import org.jetbrains.annotations.Nullable;
 import org.jivesoftware.smack.SmackException;
@@ -68,6 +66,7 @@ import com.bndg.smack.muc.RoomChat;
 import com.bndg.smack.muc.RoomState;
 import com.bndg.smack.service.SmartIMService;
 import com.bndg.smack.utils.NetworkStateListener;
+import com.bndg.smack.utils.OtherUtil;
 import com.bndg.smack.utils.SmartTrace;
 import com.bndg.smack.utils.StorageUtils;
 
@@ -246,12 +245,13 @@ public class SmartCommHelper {
     }
 
     public void setAccount(String userName) {
-        SPUtils.getInstance(SmartConstants.SP_NAME).put(SmartConstants.USER_NAME, userName);
+        StorageUtils.getInstance(SmartConstants.SP_NAME).put(SmartConstants.USER_NAME, userName);
     }
 
     public void setPassword(String passWord) {
-        SPUtils.getInstance(SmartConstants.SP_NAME).put(SmartConstants.PASS_WORD, passWord);
+        StorageUtils.getInstance(SmartConstants.SP_NAME).put(SmartConstants.PASS_WORD, passWord);
     }
+
     /**
      * 设置昵称缓存 key是账户名+NICKNAME
      * @param nickName
@@ -322,7 +322,6 @@ public class SmartCommHelper {
         return getAccount() + "-" + uniqueSuffix + "@" + serviceName;
     }
 
-
     /**
      * 通过用户名获取userid
      *
@@ -360,7 +359,7 @@ public class SmartCommHelper {
     public void onAuthenticated() {
         setConnectionState(ConnectionState.LOADING);
         if (SmartIMClient.getInstance().getSimConnectionListener() != null) {
-            SmartIMClient.getInstance().getSimConnectionListener().imLoading();
+            SmartIMClient.getInstance().getSimConnectionListener().onChatDataLoading();
         }
         Disposable subscribe = Observable.just(true)
                 .delay(50, TimeUnit.MILLISECONDS, Schedulers.io())
@@ -394,7 +393,7 @@ public class SmartCommHelper {
                                            public void onFailed(int code, String desc) {
                                                setConnectionState(ConnectionState.LOADED);
                                                if (SmartIMClient.getInstance().getSimConnectionListener() != null) {
-                                                   SmartIMClient.getInstance().getSimConnectionListener().imLoadingEnd();
+                                                   SmartIMClient.getInstance().getSimConnectionListener().onChatDataLoaded();
                                                }
                                            }
                                        });
@@ -413,7 +412,7 @@ public class SmartCommHelper {
         if (!SmartIMClient.getInstance().isAuthenticated()) {
             return;
         }
-        if (!NetworkUtils.isConnected()) {
+        if (!OtherUtil.isConnected()) {
             SmartTrace.file("当前网络未连接");
             return;
         }
@@ -446,11 +445,11 @@ public class SmartCommHelper {
      * @param jidList
      */
     private void joinSequentially(LinkedList<EntityBareJid> jidList) {
-        if (!NetworkUtils.isConnected()) {
+        if (!OtherUtil.isConnected()) {
             SmartTrace.file("无网络...");
             setConnectionState(ConnectionState.LOADED);
             if (SmartIMClient.getInstance().getSimConnectionListener() != null) {
-                SmartIMClient.getInstance().getSimConnectionListener().imLoadingEnd();
+                SmartIMClient.getInstance().getSimConnectionListener().onChatDataLoaded();
             }
             return;
         }
@@ -458,7 +457,7 @@ public class SmartCommHelper {
             SmartTrace.file("遍历加入完毕... ");
             setConnectionState(ConnectionState.LOADED);
             if (SmartIMClient.getInstance().getSimConnectionListener() != null) {
-                SmartIMClient.getInstance().getSimConnectionListener().imLoadingEnd();
+                SmartIMClient.getInstance().getSimConnectionListener().onChatDataLoaded();
             }
             // 2分钟后检查一下连接状态
             executeWithDelay(1000 * 60 * 2, () -> {
@@ -508,7 +507,7 @@ public class SmartCommHelper {
             }
             setConnectionState(ConnectionState.LOADED);
             if (SmartIMClient.getInstance().getSimConnectionListener() != null) {
-                SmartIMClient.getInstance().getSimConnectionListener().imLoadingEnd();
+                SmartIMClient.getInstance().getSimConnectionListener().onChatDataLoaded();
             }
             return;
         }
@@ -617,11 +616,11 @@ public class SmartCommHelper {
     }
 
     public void closeDeveloperMode() {
-        SPUtils.getInstance(SmartConstants.SP_NAME).put(SmartConstants.DEVELOPER_MODE, false);
+        StorageUtils.getInstance(SmartConstants.SP_NAME).put(SmartConstants.DEVELOPER_MODE, false);
     }
 
     public void openDeveloperMode() {
-        SPUtils.getInstance(SmartConstants.SP_NAME).put(SmartConstants.DEVELOPER_MODE, true);
+        StorageUtils.getInstance(SmartConstants.SP_NAME).put(SmartConstants.DEVELOPER_MODE, true);
     }
 
     public boolean isDeveloperMode() {

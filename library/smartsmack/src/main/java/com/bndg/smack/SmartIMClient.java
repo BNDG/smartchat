@@ -6,8 +6,47 @@ import android.text.TextUtils;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.blankj.utilcode.util.DeviceUtils;
-import com.blankj.utilcode.util.SPUtils;
+import com.bndg.smack.callback.AddFriendMessageListener;
+import com.bndg.smack.callback.IChatRoomCallback;
+import com.bndg.smack.callback.IConnectionListener;
+import com.bndg.smack.callback.IGroupMemberCallback;
+import com.bndg.smack.callback.ILoginCallback;
+import com.bndg.smack.callback.ISimpleMsgListener;
+import com.bndg.smack.callback.ISmartCallback;
+import com.bndg.smack.callback.ReceiverFriendStatusListener;
+import com.bndg.smack.constant.SmartConstants;
+import com.bndg.smack.contract.ISmartComm;
+import com.bndg.smack.contract.ISmartCommChatRoom;
+import com.bndg.smack.contract.ISmartCommConfig;
+import com.bndg.smack.contract.ISmartCommFriend;
+import com.bndg.smack.contract.ISmartCommMsg;
+import com.bndg.smack.contract.ISmartCommUser;
+import com.bndg.smack.entity.FetchEntity;
+import com.bndg.smack.entity.LoginEventInfo;
+import com.bndg.smack.entity.SmartMessage;
+import com.bndg.smack.enums.ConnectionState;
+import com.bndg.smack.enums.SmartContentType;
+import com.bndg.smack.enums.SmartConversationType;
+import com.bndg.smack.extensions.ArchivedExtension;
+import com.bndg.smack.extensions.MessageTypeExtension;
+import com.bndg.smack.extensions.OobDataExtension;
+import com.bndg.smack.extensions.SenderInfoExtension;
+import com.bndg.smack.extensions.TestGroupMembersExtension;
+import com.bndg.smack.extensions.VCardUpdateExtension;
+import com.bndg.smack.extensions.bookmarks.BookmarksManager;
+import com.bndg.smack.impl.DefaultSmartCommChatRoomImpl;
+import com.bndg.smack.impl.DefaultSmartCommFriendImpl;
+import com.bndg.smack.impl.DefaultSmartCommImpl;
+import com.bndg.smack.impl.DefaultSmartCommMsgImpl;
+import com.bndg.smack.impl.DefaultSmartCommUserImpl;
+import com.bndg.smack.impl.DefaultXmppConfigImpl;
+import com.bndg.smack.model.SmartGroupInfo;
+import com.bndg.smack.model.SmartUserInfo;
+import com.bndg.smack.muc.RoomChat;
+import com.bndg.smack.utils.BitmapUtils;
+import com.bndg.smack.utils.OtherUtil;
+import com.bndg.smack.utils.SmartTrace;
+import com.bndg.smack.utils.StorageUtils;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
@@ -66,46 +105,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import com.bndg.smack.callback.AddFriendMessageListener;
-import com.bndg.smack.callback.IChatRoomCallback;
-import com.bndg.smack.callback.IConnectionListener;
-import com.bndg.smack.callback.IGroupMemberCallback;
-import com.bndg.smack.callback.ILoginCallback;
-import com.bndg.smack.callback.ISimpleMsgListener;
-import com.bndg.smack.callback.ISmartCallback;
-import com.bndg.smack.callback.ReceiverFriendStatusListener;
-import com.bndg.smack.constant.SmartConstants;
-import com.bndg.smack.contract.ISmartComm;
-import com.bndg.smack.contract.ISmartCommChatRoom;
-import com.bndg.smack.contract.ISmartCommConfig;
-import com.bndg.smack.contract.ISmartCommFriend;
-import com.bndg.smack.contract.ISmartCommMsg;
-import com.bndg.smack.contract.ISmartCommUser;
-import com.bndg.smack.entity.FetchEntity;
-import com.bndg.smack.entity.LoginEventInfo;
-import com.bndg.smack.entity.SmartMessage;
-import com.bndg.smack.enums.ConnectionState;
-import com.bndg.smack.enums.SmartContentType;
-import com.bndg.smack.enums.SmartConversationType;
-import com.bndg.smack.extensions.ArchivedExtension;
-import com.bndg.smack.extensions.MessageTypeExtension;
-import com.bndg.smack.extensions.OobDataExtension;
-import com.bndg.smack.extensions.SenderInfoExtension;
-import com.bndg.smack.extensions.TestGroupMembersExtension;
-import com.bndg.smack.extensions.VCardUpdateExtension;
-import com.bndg.smack.extensions.bookmarks.BookmarksManager;
-import com.bndg.smack.impl.DefaultSmartCommChatRoomImpl;
-import com.bndg.smack.impl.DefaultSmartCommFriendImpl;
-import com.bndg.smack.impl.DefaultSmartCommImpl;
-import com.bndg.smack.impl.DefaultSmartCommMsgImpl;
-import com.bndg.smack.impl.DefaultSmartCommUserImpl;
-import com.bndg.smack.impl.DefaultXmppConfigImpl;
-import com.bndg.smack.model.SmartGroupInfo;
-import com.bndg.smack.model.SmartUserInfo;
-import com.bndg.smack.muc.RoomChat;
-import com.bndg.smack.utils.BitmapUtils;
-import com.bndg.smack.utils.OtherUtil;
-import com.bndg.smack.utils.SmartTrace;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
@@ -270,7 +269,7 @@ public class SmartIMClient {
                         public void onSuccess() {
                             isRunning = false;
                             if (iConnectionListener != null) {
-                                iConnectionListener.onConnectSuccess();
+                                iConnectionListener.onServerConnected();
                             }
                         }
 
@@ -424,7 +423,7 @@ public class SmartIMClient {
             public void onSuccess() {
                 SmartCommHelper.getInstance().setConnectionState(ConnectionState.CONNECTED);
                 if (iConnectionListener != null) {
-                    iConnectionListener.onConnectSuccess();
+                    iConnectionListener.onServerConnected();
                 }
                 getSmartCommUserManager().login(userName, passWord, new ILoginCallback() {
                     @Override
@@ -446,7 +445,7 @@ public class SmartIMClient {
             public void onFailed(int code, String desc) {
                 SmartCommHelper.getInstance().setConnectionState(ConnectionState.DISCONNECTED);
                 if (iConnectionListener != null) {
-                    iConnectionListener.onConnectFailed(desc);
+                    iConnectionListener.onServerConnectFailed(desc);
                 }
                 iSmartCallback.onFailed(code, desc);
             }
@@ -456,7 +455,7 @@ public class SmartIMClient {
     public void showConnecting() {
         SmartCommHelper.getInstance().setConnectionState(ConnectionState.CONNECTING);
         if (iConnectionListener != null) {
-            iConnectionListener.onConnecting();
+            iConnectionListener.onServerConnecting();
         }
     }
 
@@ -804,7 +803,7 @@ public class SmartIMClient {
                                 .setSecurityMode(getSmartCommConfig().getSecurityMode())
                                 // 不发送在线状态 以离线方式登录,以便获取离线消息
                                 .setSendPresence(false)
-                                .setResource(DeviceUtils.getAndroidID())
+                                .setResource(OtherUtil.getAndroidID())
                                 .setConnectTimeout(20 * 1000)
                                 .setCustomSSLContext(sslContext)
                                 .setCustomX509TrustManager(new X509TrustManager() {
@@ -1206,8 +1205,8 @@ public class SmartIMClient {
         Disposable subscribe = Observable.fromCallable(() -> {
                     if (connection != null && connection.isConnected()) {
                         //设为下线
-                        SPUtils.getInstance(SmartConstants.SP_NAME).remove(SmartConstants.USER_NAME);
-                        SPUtils.getInstance(SmartConstants.SP_NAME).remove(SmartConstants.PASS_WORD);
+                        StorageUtils.getInstance(SmartConstants.SP_NAME).remove(SmartConstants.USER_NAME);
+                        StorageUtils.getInstance(SmartConstants.SP_NAME).remove(SmartConstants.PASS_WORD);
                         Roster.getInstanceFor(connection)
                                 .removeRosterListener(mReceiverFriendStatusListener);
                         Roster.getInstanceFor(connection)

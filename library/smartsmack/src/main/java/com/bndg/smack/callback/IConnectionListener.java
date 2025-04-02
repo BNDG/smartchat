@@ -7,24 +7,26 @@ package com.bndg.smack.callback;
  */
 public interface IConnectionListener {
     // 连接中
-    void onConnecting();
+    void onServerConnecting();
 
     // 已连接
-    void onConnectSuccess();
+    void onServerConnected();
+
+    // 连接失败
+    void onServerConnectFailed(String desc);
 
     // 已鉴权
     void onAuthenticated();
 
-    // 连接失败
-    void onConnectFailed(String desc);
-
     // 登录失败
     void onLoginFailed(int code, String desc);
 
-    void imLoading();
+    default void onChatDataLoading() {
+    }
 
     // im加载结束
-    void imLoadingEnd();
+    default void onChatDataLoaded() {
+    }
 
     // 当前用户被踢下线
     void onKickedOffline();

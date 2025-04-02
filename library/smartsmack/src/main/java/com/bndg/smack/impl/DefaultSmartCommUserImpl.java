@@ -51,7 +51,6 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import com.blankj.utilcode.util.AppUtils;
 import com.bndg.smack.R;
 import com.bndg.smack.SmartCommHelper;
 import com.bndg.smack.SmartIMClient;

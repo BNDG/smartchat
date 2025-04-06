@@ -3,8 +3,8 @@
 > 本项目是为了学习 XMPP 协议而写的一个简单的app，实现了一些基本的聊天功能，为了使用习惯，UI上参照了某著名聊天。
 
 #### 下载链接
-https://wwhq.lanzouu.com/iH1Zi2sg1mid
-密码:fi54
+https://wwhq.lanzouu.com/irGMy2su105c
+密码:ctwx
 #### 推荐客户端
 
 - [Conversations](https://codeberg.org/iNPUTmice/Conversations) 稳定性好，功能完善，更新及时。只是UI操作和国内的聊天软件不同，需要习惯。

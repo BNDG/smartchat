@@ -295,7 +295,7 @@ public class SmartCommHelper {
     }
 
     public String getUserId() {
-        return SmartIMClient.getInstance().getConnection().getUser().asEntityBareJidString();
+        return getAccount() + "@" + SmartIMClient.getInstance().getSmartCommConfig().getDomainName();
     }
 
     public String getPassword() {

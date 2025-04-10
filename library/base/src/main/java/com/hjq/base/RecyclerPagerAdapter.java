@@ -107,6 +107,6 @@ public final class RecyclerPagerAdapter extends PagerAdapter {
     public void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         super.setPrimaryItem(container, position, object);
         currentObject = object;
-        Log.d(">>>>", "setPrimaryItem: pos " + position);
+//        Log.d(">>>>", "setPrimaryItem: pos " + position);
     }
 }

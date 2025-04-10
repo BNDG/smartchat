@@ -20,4 +20,6 @@ public class SmartContentType {
     public static final String GROUP_INVITATION_MESSAGE = "GROUP_INVITATION_MESSAGE";
     // 退群消息
     public static final String LEAVE_ROOM = "LEAVE_ROOM";
+    // 引用图片消息
+    public static final String QUOTE_IMAGE = "QUOTE_IMAGE";
 }

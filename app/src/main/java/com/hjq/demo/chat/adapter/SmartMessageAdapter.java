@@ -59,9 +59,8 @@ import com.hjq.demo.chat.widget.selecttext.SelectTextDialog;
 import com.hjq.demo.chat.widget.selecttext.SelectTextEvent;
 import com.hjq.demo.chat.widget.selecttext.SelectTextEventBus;
 import com.hjq.demo.chat.widget.selecttext.SelectTextHelper;
-import com.hjq.demo.http.glide.GlideApp;
 import com.hjq.demo.manager.ActivityManager;
-import com.hjq.demo.ui.activity.ImagePreviewActivity;
+import com.hjq.demo.ui.activity.ImagePreviewMsgActivity;
 import com.hjq.demo.ui.dialog.MessageDialog;
 import com.hjq.demo.utils.CheckUtil;
 import com.hjq.demo.utils.JsonParser;
@@ -107,6 +106,8 @@ public class SmartMessageAdapter extends BaseMultiItemQuickAdapter<ChatMessage, 
     public static final int SENT_CARD_INFO = 28;
     public static final int RECEIVED_CARD_INFO = 29;
     public static final int RECEIVED_SPANNABLE_TEXT = 2;
+    public static final int SENT_QUOTE_IMAGE = 30;
+    public static final int RECEIVED_QUOTE_IMAGE = 31;
     private EditText mTextMsgEt;
 
     public SmartMessageAdapter(List<ChatMessage> data) {
@@ -116,6 +117,8 @@ public class SmartMessageAdapter extends BaseMultiItemQuickAdapter<ChatMessage, 
         addItemType(SmartMessageAdapter.RECEIVED_TEXT, R.layout.item_received_text);
         addItemType(SmartMessageAdapter.SENT_IMAGE, R.layout.item_sent_image);
         addItemType(SmartMessageAdapter.RECEIVED_IMAGE, R.layout.item_received_image);
+        addItemType(SmartMessageAdapter.SENT_QUOTE_IMAGE, R.layout.item_sent_quote_image);
+        addItemType(SmartMessageAdapter.RECEIVED_QUOTE_IMAGE, R.layout.item_received_quote_image);
         addItemType(SmartMessageAdapter.SENT_FILE, R.layout.item_sent_file);
         addItemType(SmartMessageAdapter.RECEIVED_FILE, R.layout.item_received_file);
         addItemType(SmartMessageAdapter.SENT_VOICE, R.layout.item_sent_voice);
@@ -218,48 +221,7 @@ public class SmartMessageAdapter extends BaseMultiItemQuickAdapter<ChatMessage, 
             }
             case RECEIVED_SPANNABLE_TEXT:
             case RECEIVED_TEXT:
-                TextView receivedTv = helper.getView(R.id.tv_chat_content);
-                helper.setText(R.id.tv_timestamp, TimestampUtil.getTimeStringAutoShort2(chatMessage.getTimestamp(), true))
-                        .setGone(R.id.tv_timestamp, canShowTime)
-                        .setText(R.id.tv_group_nickname, chatMessage.getFromUserName())
-                        .setGone(R.id.tv_group_nickname, !chatMessage.isGroupMsg());
-                if (chatMessage.getItemType() == RECEIVED_SPANNABLE_TEXT) {
-                    String str = chatMessage.getMessageContent();
-                    List<String> spannableStr = CheckUtil.findSpannableStr(str);
-                    if (!spannableStr.isEmpty()) {
-                        SpanUtils with = SpanUtils.with(receivedTv);
-                        int startIndex = 0;
-                        for (int i = 0; i < spannableStr.size(); i++) {
-                            String actionStr = spannableStr.get(i);
-                            int endIndex = str.indexOf(actionStr);
-                            // endIndex - 1去掉第一个#
-                            with.append(str.substring(startIndex, endIndex - 1));
-                            String[] split = actionStr.split("action::");
-                            with.append(split[0]).setForegroundColor(Color.BLUE).setClickSpan(new CustomClickableSpan(split[1]));
-                            // startIndex + actionStr.length() + 1去掉最后一个#
-                            startIndex = endIndex + actionStr.length() + 1;
-                        }
-                        with.append(str.substring(startIndex)).create();
-                    } else {
-                        receivedTv.setText(str);
-                    }
-                } else {
-                    receivedTv.setText(chatMessage.getMessageContent());
-                    if (receivedTv.getTag() == null) {
-                        SelectTextHolder selectTextHolder = new SelectTextHolder(chatMessage, receivedTv,
-                                receivedTv, helper.getLayoutPosition());
-                        selectTextHolder.selectText();
-                        receivedTv.setTag(selectTextHolder);
-                    } else {
-                        SelectTextHolder tagSelectTextHolder = (SelectTextHolder) receivedTv.getTag();
-                        tagSelectTextHolder.setChatmessage(chatMessage);
-                        tagSelectTextHolder.setTextView(receivedTv);
-                        tagSelectTextHolder.setParentPosition(helper.getLayoutPosition());
-                        tagSelectTextHolder.setPopTargetView(receivedTv);
-                        tagSelectTextHolder.selectText();
-                    }
-                }
-                loadAvatar(chatMessage, helper.getView(R.id.sdv_avatar));
+                receivedText(helper, chatMessage, canShowTime);
                 break;
             case SENT_IMAGE:
                 loadAvatar(chatMessage, helper.getView(R.id.sdv_avatar));
@@ -270,6 +232,12 @@ public class SmartMessageAdapter extends BaseMultiItemQuickAdapter<ChatMessage, 
                 loadImage(helper, chatMessage, chatMessage.getIsSent());
                 helper.setText(R.id.tv_group_nickname, chatMessage.getFromUserName())
                         .setGone(R.id.tv_group_nickname, !chatMessage.isGroupMsg());
+                break;
+            case RECEIVED_QUOTE_IMAGE:
+                receivedText(helper, chatMessage, canShowTime);
+                loadQuoteImage(helper, chatMessage.getExtraData());
+                helper.setText(R.id.tv_quote_nickname, chatMessage.getFromUserName())
+                        .setGone(R.id.tv_quote_nickname, !chatMessage.isGroupMsg());
                 break;
             case SENT_FILE:
                 loadAvatar(chatMessage, helper.getView(R.id.sdv_avatar));
@@ -322,6 +290,61 @@ public class SmartMessageAdapter extends BaseMultiItemQuickAdapter<ChatMessage, 
         }
     }
 
+    private void loadQuoteImage(BaseViewHolder helper, String extraData) {
+        ImageView imageView = helper.getView(R.id.aiv_quote);
+        Uri uri = Uri.parse(extraData);
+        // centerCrop 图片变形
+        GlideApp.with(getContext())
+                .load(uri)
+                .diskCacheStrategy(DiskCacheStrategy.ALL) // 缓存策略
+                .into(imageView);
+    }
+
+    private void receivedText(@NonNull BaseViewHolder helper, ChatMessage chatMessage, boolean canShowTime) {
+        TextView receivedTv = helper.getView(R.id.tv_chat_content);
+        helper.setText(R.id.tv_timestamp, TimestampUtil.getTimeStringAutoShort2(chatMessage.getTimestamp(), true))
+                .setGone(R.id.tv_timestamp, canShowTime)
+                .setText(R.id.tv_group_nickname, chatMessage.getFromUserName())
+                .setGone(R.id.tv_group_nickname, !chatMessage.isGroupMsg());
+        if (chatMessage.getItemType() == RECEIVED_SPANNABLE_TEXT) {
+            String str = chatMessage.getMessageContent();
+            List<String> spannableStr = CheckUtil.findSpannableStr(str);
+            if (!spannableStr.isEmpty()) {
+                SpanUtils with = SpanUtils.with(receivedTv);
+                int startIndex = 0;
+                for (int i = 0; i < spannableStr.size(); i++) {
+                    String actionStr = spannableStr.get(i);
+                    int endIndex = str.indexOf(actionStr);
+                    // endIndex - 1去掉第一个#
+                    with.append(str.substring(startIndex, endIndex - 1));
+                    String[] split = actionStr.split("action::");
+                    with.append(split[0]).setForegroundColor(Color.BLUE).setClickSpan(new CustomClickableSpan(split[1]));
+                    // startIndex + actionStr.length() + 1去掉最后一个#
+                    startIndex = endIndex + actionStr.length() + 1;
+                }
+                with.append(str.substring(startIndex)).create();
+            } else {
+                receivedTv.setText(str);
+            }
+        } else {
+            receivedTv.setText(chatMessage.getMessageContent());
+            if (receivedTv.getTag() == null) {
+                SelectTextHolder selectTextHolder = new SelectTextHolder(chatMessage, receivedTv,
+                        receivedTv, helper.getLayoutPosition());
+                selectTextHolder.selectText();
+                receivedTv.setTag(selectTextHolder);
+            } else {
+                SelectTextHolder tagSelectTextHolder = (SelectTextHolder) receivedTv.getTag();
+                tagSelectTextHolder.setChatmessage(chatMessage);
+                tagSelectTextHolder.setTextView(receivedTv);
+                tagSelectTextHolder.setParentPosition(helper.getLayoutPosition());
+                tagSelectTextHolder.setPopTargetView(receivedTv);
+                tagSelectTextHolder.selectText();
+            }
+        }
+        loadAvatar(chatMessage, helper.getView(R.id.sdv_avatar));
+    }
+
     private void loadCardInfo(BaseViewHolder helper, ChatMessage chatMessage, boolean isSent) {
         String extraData = chatMessage.getExtraData();
         if (TextUtils.isEmpty(extraData)) {
@@ -369,27 +392,22 @@ public class SmartMessageAdapter extends BaseMultiItemQuickAdapter<ChatMessage, 
                 return true;
             }
         });
-        Uri uri;
+        Uri uri = null;
         String thumbnailLocalPath = chatVideoBean.getThumbnailLocalPath();
-        String thumbnailUrl = chatVideoBean.getThumbnailUrl();
-        if(TextUtils.isEmpty(thumbnailUrl)) {
-            GlideApp.with(getContext())
-                    .load(R.drawable.video_preview)
-                    .into(imageView);
-        }else {
-            if (!TextUtils.isEmpty(thumbnailLocalPath)) {
-                File file = new File(thumbnailLocalPath);
-                if (isSent && file.exists()) {
-                    // 本地读
-                    uri = Uri.fromFile(new File(thumbnailLocalPath));
-                } else {
-                    // 网络获取
-                    uri = Uri.parse(thumbnailUrl);
-                }
+        if (!TextUtils.isEmpty(thumbnailLocalPath)) {
+            File file = new File(thumbnailLocalPath);
+            if (isSent && file.exists()) {
+                // 本地读
+                uri = Uri.fromFile(new File(thumbnailLocalPath));
             } else {
                 // 网络获取
-                uri = Uri.parse(thumbnailUrl);
+                uri = Uri.parse(chatVideoBean.getThumbnailUrl());
             }
+        } else if (!TextUtils.isEmpty(chatVideoBean.getThumbnailUrl())) {
+            // 网络获取
+            uri = Uri.parse(chatVideoBean.getThumbnailUrl());
+        }
+        if (uri != null) {
             GlideApp.with(getContext())
                     .load(uri)
                     .centerInside()
@@ -711,7 +729,9 @@ public class SmartMessageAdapter extends BaseMultiItemQuickAdapter<ChatMessage, 
                         Bundle bundle = new Bundle();
                         bundle.putString(Constant.MESSAGE_FILE_LOCAL, chatmessage.getFileLocalPath());
                         bundle.putString(Constant.MESSAGE_ORIGIN_ID, chatmessage.getOriginId());
-                        ImagePreviewActivity.start(getContext(), url, bundle);
+                        bundle.putString(Constant.MESSAGE_CONTENT, chatmessage.getMessageContent());
+                        bundle.putString(Constant.CONVERSATION_ID, chatmessage.getConversationId());
+                        ImagePreviewMsgActivity.start(getContext(), bundle);
                     } else if (CheckUtil.isXmppLink(url)) {
                         if (url.startsWith(XmppUri.XMPP_PRE) && url.endsWith(XmppUri.ACTION_JOIN)) {
                             String conversationId = CheckUtil.getRoomIdFromUrl(url);
@@ -879,7 +899,7 @@ public class SmartMessageAdapter extends BaseMultiItemQuickAdapter<ChatMessage, 
      * @param parentPosition
      */
     private void showCustomPop(View targetView, ChatMessage message, String selectedText, int parentPosition) {
-        CustomPop msgPop = new CustomPop(getContext(), targetView, true);
+        CustomPop msgPop = new CustomPop(getContext(), targetView, false);
         if (!TextUtils.isEmpty(selectedText)) {
             msgPop.addItem(
                     R.drawable.ic_msg_copy,

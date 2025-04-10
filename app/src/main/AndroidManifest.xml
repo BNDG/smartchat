@@ -481,6 +481,10 @@
         <activity android:name=".chat.activity.ChatGroupAdministratorsActivity" />
         <activity android:name=".chat.activity.BackupDbActivity" />
         <activity android:name=".chat.activity.VisualMediaActivity" />
+        <activity
+            android:name=".ui.activity.ImagePreviewMsgActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
 
         <!--        前台保活-->
         <service android:name=".chat.service.XmppForegroundService"  android:exported="false"

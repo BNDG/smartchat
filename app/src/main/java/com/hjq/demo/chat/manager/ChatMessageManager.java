@@ -60,6 +60,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.bndg.smack.SmartCommHelper;
 import com.bndg.smack.SmartIMClient;
@@ -522,6 +524,22 @@ public class ChatMessageManager implements ISimpleMsgListener {
         }
         ChatMessage chatMessage = wrapperToChatMessage(msgEntity);
         chatMessage.setExtraData(extraData);
+        if (SmartContentType.TEXT.equals(chatMessage.getMessageType())) {
+            String regex = ">\\s*(https?://[^\\s\"]+\\.(jpg|jpeg|png|gif|bmp))";
+            List<String> results = new ArrayList<>();
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(msgEntity.getMessageContent());
+            while (matcher.find()) {
+                // 使用 matcher.group(1) 获取第一个捕获组，即 URL 部分
+                results.add(matcher.group(1));
+            }
+            if (!results.isEmpty()) {
+                String newContent = msgEntity.getMessageContent().replaceAll(regex +"\n", "");
+                chatMessage.setMessageContent(newContent);
+                chatMessage.setMessageType(SmartContentType.QUOTE_IMAGE);
+                chatMessage.setExtraData(results.get(0));
+            }
+        }
         AvatarGenerator.checkAvatar(chatMessage.getFromUserId());
         ChatMessage message = MessageDao.getInstance()
                 .getLatestMessageByConversationId(chatMessage.getConversationId());

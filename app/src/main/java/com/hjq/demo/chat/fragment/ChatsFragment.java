@@ -324,7 +324,9 @@ public class ChatsFragment extends BaseChatFragment {
     }
 
     public void updateHeaderErrorView(boolean visible) {
-        headErrorView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        if (headErrorView != null) {
+            headErrorView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void scrollToTop() {

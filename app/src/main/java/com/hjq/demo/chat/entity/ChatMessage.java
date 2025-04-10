@@ -478,6 +478,8 @@ public class ChatMessage implements MultiItemEntity {
                     return isSent ? SmartMessageAdapter.SENT_TEXT : SmartMessageAdapter.RECEIVED_TEXT;
                 case SmartContentType.IMAGE:
                     return isSent ? SmartMessageAdapter.SENT_IMAGE : SmartMessageAdapter.RECEIVED_IMAGE;
+                case SmartContentType.QUOTE_IMAGE:
+                    return isSent ? SmartMessageAdapter.SENT_TEXT : SmartMessageAdapter.RECEIVED_QUOTE_IMAGE;
                 case SmartContentType.FILE:
                     return isSent ? SmartMessageAdapter.SENT_FILE : SmartMessageAdapter.RECEIVED_FILE;
                 case Constant.MSG_TYPE_LOCATION:

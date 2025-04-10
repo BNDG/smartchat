@@ -9,6 +9,7 @@ import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.hjq.demo.chat.entity.ChatMessage;
+import com.hjq.demo.ui.activity.ImagePreviewMsgActivity;
 
 import java.util.List;
 
@@ -92,4 +93,25 @@ public interface ChatMessageDao {
 
     @Query("UPDATE chat_message SET status = '3' WHERE belongAccount = :belongAccount and status = '1'")
     void updateSendingToFailed(String belongAccount);
+
+    @Query("SELECT * FROM chat_message " +
+            "WHERE conversationId = :conversationId " +
+            "AND belongAccount = :userId " +
+            "AND messageType = 'IMAGE' " +
+            "AND status <> '4' " +
+            "AND timestamp < (SELECT timestamp FROM chat_message " +
+            "WHERE originId = :originId)" +
+            "ORDER BY timestamp DESC LIMIT " + ImagePreviewMsgActivity.IMG_PAGE_SIZE)
+    List<ChatMessage> getPreviousImages(String originId, String conversationId, String userId);
+
+    @Query("SELECT * FROM chat_message " +
+            "WHERE conversationId = :conversationId " +
+            "AND belongAccount = :userId " +
+            "AND messageType = 'IMAGE' " +
+            "AND status <> '4' " +
+            "AND timestamp > (SELECT timestamp FROM chat_message " +
+            "WHERE originId = :originId)" +
+            "ORDER BY timestamp ASC LIMIT " + ImagePreviewMsgActivity.IMG_PAGE_SIZE)
+    List<ChatMessage> getNextImages(String originId, String conversationId, String userId);
+
 }

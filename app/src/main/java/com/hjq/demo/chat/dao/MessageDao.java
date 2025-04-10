@@ -1,5 +1,6 @@
 package com.hjq.demo.chat.dao;
 
+import androidx.core.util.Pair;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
@@ -17,6 +18,7 @@ import com.rxjava.rxlife.RxLife;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -118,6 +120,44 @@ public class MessageDao {
                 .to(RxLife.to(owner))
                 .subscribe(chatMessages -> {
                     callback.getMessagesByConversationId(chatMessages);
+                }, onError -> {
+
+                });
+    }
+
+    public void queryImgMsgPreNext(LifecycleOwner owner, String conversationId, String originId,
+                                   boolean canGetPrevious, boolean canGetNext, MessageDaoCallback callback) {
+
+        Disposable subscribe = Single.fromCallable(new Callable<Pair<List<ChatMessage>, List<ChatMessage>>>() {
+                    @Override
+                    public Pair<List<ChatMessage>, List<ChatMessage>> call() throws Exception {
+                        List<ChatMessage> previousImages = new ArrayList<>();
+                        List<ChatMessage> nextImages = new ArrayList<>();
+                        if (canGetPrevious) {
+                            previousImages = AppDatabase.getInstance(ActivityManager.getInstance().getApplication()).messageDao()
+                                    .getPreviousImages(originId, conversationId, PreferencesUtil.getInstance().getUserId());
+                            // 1 2 3 4 5
+                          /*  if (!previousImages.isEmpty()) {
+                                previousImages.remove(0);
+                            }*/
+                            // 倒序 5 4 3 2 1
+                            Collections.reverse(previousImages);
+                        }
+                        if (canGetNext) {
+                            nextImages = AppDatabase.getInstance(ActivityManager.getInstance().getApplication()).messageDao()
+                                    .getNextImages(originId, conversationId, PreferencesUtil.getInstance().getUserId());
+                            // 移除第一条
+                            /*if (!nextImages.isEmpty()) {
+                                nextImages.remove(0);
+                            }*/
+                        }
+                        return new Pair<>(previousImages, nextImages);
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .to(RxLife.to(owner))
+                .subscribe(pairList -> {
+                    callback.getImageMsgs(pairList);
                 }, onError -> {
 
                 });
@@ -675,6 +715,9 @@ public class MessageDao {
         }
 
         default void queryMessagePosition(Integer[] ints) {
+        }
+
+        default void getImageMsgs(Pair<List<ChatMessage>, List<ChatMessage>> chatMessages) {
         }
     }
 }

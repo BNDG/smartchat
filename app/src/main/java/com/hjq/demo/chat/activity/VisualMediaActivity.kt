@@ -15,7 +15,7 @@ import com.hjq.demo.chat.cons.Constant
 import com.hjq.demo.chat.dao.MessageDao
 import com.hjq.demo.chat.entity.ChatMessage
 import com.hjq.demo.chat.widget.LQRRecyclerView
-import com.hjq.demo.ui.activity.ImagePreviewActivity
+import com.hjq.demo.ui.activity.ImagePreviewMsgActivity
 import com.hjq.demo.utils.Trace
 import java.io.File
 
@@ -50,12 +50,13 @@ class VisualMediaActivity : ChatBaseActivity(), OnLoadMoreListener {
                     Uri.parse(item.messageContent)
                 }
                 // 生成转场动画的bundle对象
-                val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imgView, "share_image")
-                    .toBundle()
+                val bundle = Bundle()
                 // 如果有参数传递，可以这么添加
-                bundle?.putString(Constant.MESSAGE_FILE_LOCAL, item.fileLocalPath)
-                bundle?.putString(Constant.MESSAGE_ORIGIN_ID, item.originId)
-                ImagePreviewActivity.start(context, uri.toString(), bundle)
+                bundle.putString(Constant.MESSAGE_FILE_LOCAL, item.fileLocalPath)
+                bundle.putString(Constant.MESSAGE_ORIGIN_ID, item.originId)
+                bundle.putString(Constant.MESSAGE_CONTENT, item.messageContent)
+                bundle.putString(Constant.CONVERSATION_ID, conversationId)
+                ImagePreviewMsgActivity.start(context, bundle)
             }
         }
         conversationId = intent.getStringExtra(Constant.CONVERSATION_ID)

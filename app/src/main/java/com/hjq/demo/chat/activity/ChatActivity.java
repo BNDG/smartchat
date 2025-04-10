@@ -108,7 +108,7 @@ import com.hjq.demo.chat.widget.selecttext.SelectTextEvent;
 import com.hjq.demo.manager.ActivityManager;
 import com.hjq.demo.other.AppConfig;
 import com.hjq.demo.other.PermissionCallback;
-import com.hjq.demo.ui.activity.ImagePreviewActivity;
+import com.hjq.demo.ui.activity.ImagePreviewMsgActivity;
 import com.hjq.demo.ui.activity.ImageSelectActivity;
 import com.hjq.demo.ui.activity.VideoPlayActivity;
 import com.hjq.demo.ui.dialog.DemoListDialogFragment;
@@ -436,18 +436,12 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                             }
                         }
                     } else if (view.getId() == R.id.sdv_image_content) {
-                        Uri uri;
-                        if (!TextUtils.isEmpty(item.getFileLocalPath())) {
-                            // 本地读
-                            uri = Uri.fromFile(new File(item.getFileLocalPath()));
-                        } else {
-                            // 网络获取
-                            uri = Uri.parse(messageContent);
-                        }
                         Bundle bundle = new Bundle();
                         bundle.putString(Constant.MESSAGE_FILE_LOCAL, item.getFileLocalPath());
                         bundle.putString(Constant.MESSAGE_ORIGIN_ID, item.getOriginId());
-                        ImagePreviewActivity.start(getActivity(), uri.toString(), bundle);
+                        bundle.putString(Constant.MESSAGE_CONTENT, item.getMessageContent());
+                        bundle.putString(Constant.CONVERSATION_ID, conversationId);
+                        ImagePreviewMsgActivity.start(getActivity(), bundle);
                     } else if (view.getId() == R.id.cv_voice_content) {
                         Trace.d("onItemChildClick: play audio");
                         View iv_chat_voice = view.findViewById(R.id.iv_chat_voice);
@@ -530,27 +524,26 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                             }
                         }
                         // 下载完封面后再去播放
-                        File videoThumbnailFile = FileUtil.getThumbnailFile(ChatActivity.this,
-                                chatVideoBean.getThumbnailUrl());
-                        ChatMessageManager.downLoadFile(ChatActivity.this, videoThumbnailFile, chatVideoBean.getThumbnailUrl(), new DownloadFileListener() {
-                            @Override
-                            public void onComplete(File file) {
-                                chatVideoBean.setThumbnailLocalPath(file.getAbsolutePath());
-                                item.setExtraData(JsonParser.serializeToJson(chatVideoBean));
-                                MessageDao.getInstance().save(item);
-                                new VideoPlayActivity.Builder()
-                                        .setVideoTitle("")
-                                        .setVideoSource(item.getMessageContent())
-                                        .setActivityOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-                                        .setAutoOver(false)
-                                        .start(ChatActivity.this);
-                            }
+                        if (!TextUtils.isEmpty(chatVideoBean.getThumbnailUrl())) {
+                            File videoThumbnailFile = FileUtil.getThumbnailFile(ChatActivity.this,
+                                    chatVideoBean.getThumbnailUrl());
+                            ChatMessageManager.downLoadFile(ChatActivity.this, videoThumbnailFile, chatVideoBean.getThumbnailUrl(), new DownloadFileListener() {
+                                @Override
+                                public void onComplete(File file) {
+                                    chatVideoBean.setThumbnailLocalPath(file.getAbsolutePath());
+                                    item.setExtraData(JsonParser.serializeToJson(chatVideoBean));
+                                    MessageDao.getInstance().save(item);
+                                    playVideoFile(item.getMessageContent());
+                                }
 
-                            @Override
-                            public void onError(File var1, Throwable var2) {
+                                @Override
+                                public void onError(File var1, Throwable var2) {
 
-                            }
-                        });
+                                }
+                            });
+                        } else {
+                            playVideoFile(item.getMessageContent());
+                        }
                     } else if (view.getId() == R.id.cv_file_content) {
                         ChatFileBean chatFileBean = JsonParser.deserializeByJson(item.getExtraData(), ChatFileBean.class);
                         if (chatFileBean == null) {
@@ -636,6 +629,15 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                 Trace.d(archivedId + "joinRoom: >>>>>" + message.getMessageContent());
             }*/
         });
+    }
+
+    private void playVideoFile(String source) {
+        new VideoPlayActivity.Builder()
+                .setVideoTitle("")
+                .setVideoSource(source)
+                .setActivityOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                .setAutoOver(false)
+                .start(ChatActivity.this);
     }
 
     private void goUserInfoActivity(String fromUserId) {
@@ -1859,7 +1861,7 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
      * 发送图片
      */
     private void compressAndSendImg() {
-        if(mFileSendQueue.isEmpty()) {
+        if (mFileSendQueue.isEmpty()) {
             return;
         }
         String filePath = mFileSendQueue.removeFirst();

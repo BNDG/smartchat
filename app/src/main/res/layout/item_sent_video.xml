@@ -41,6 +41,7 @@
                 android:id="@+id/iv_video_thumbnail"
                 android:layout_width="@dimen/dp_90"
                 android:layout_height="@dimen/dp_160"
+                android:background="@android:color/black"
                 android:layout_centerInParent="true"
                 android:scaleType="centerCrop" />
 

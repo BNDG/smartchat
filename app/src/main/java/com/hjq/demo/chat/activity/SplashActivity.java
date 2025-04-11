@@ -94,7 +94,7 @@ public class SplashActivity extends AppActivity implements View.OnClickListener 
         SpannableString spannableString = new SpannableString(message);
         int start = message.indexOf(getString(R.string.privacy_agreement_name));
         int end = start + getString(R.string.privacy_agreement_name).length();
-        String privacyPolicyUrl = "https://www.umeng.com/page/policy";
+        String privacyPolicyUrl = "https://www.bing.com/";
         spannableString.setSpan(new URLSpan(privacyPolicyUrl), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new ForegroundColorSpan(Color.BLUE), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         // 消息对话框

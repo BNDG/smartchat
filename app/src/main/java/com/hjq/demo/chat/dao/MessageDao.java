@@ -416,8 +416,10 @@ public class MessageDao {
                         String[] args = new String[]{PreferencesUtil.getInstance().getUserId(),
                                 conversationId, String.valueOf(SEARCH_PAGE_SIZE), String.valueOf(pageNum * SEARCH_PAGE_SIZE)};
                         SupportSQLiteQuery sqliteQuery = new SimpleSQLiteQuery(query, args);
-                        return AppDatabase.getInstance(ActivityManager.getInstance().getApplication())
+                        List<ChatMessage> chatMessages = AppDatabase.getInstance(ActivityManager.getInstance().getApplication())
                                 .messageDao().searchMessages(sqliteQuery);
+                        Collections.reverse(chatMessages);
+                        return chatMessages;
                     }
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

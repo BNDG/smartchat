@@ -1212,7 +1212,9 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                 smartMessageAdapter.refreshDownloadProgress(eventOriginId, Constant.DOWNLOAD_PROGRESS, progress);
                 break;
             }
-
+            case ChatEvent.UPLOAD_FILE_SUCCESS:
+                compressAndSendImg();
+                break;
         }
     }
 
@@ -1891,7 +1893,6 @@ public class ChatActivity extends ChatBaseActivity implements View.OnClickListen
                             } else {
                                 uploadFile(outfile, SmartContentType.IMAGE, "");
                             }
-                            compressAndSendImg();
                         }
                     });
         }

@@ -745,6 +745,7 @@ public class MainActivity extends ChatBaseActivity implements
             } else if (Constant.UPLOAD_FILE_SUCCESS.equals(intent.getAction())) {
                 // 交给chatMessageManager处理
                 ChatMessageManager.getInstance().uploadFileSuccess(intent);
+                EventBus.getDefault().post(new ChatEvent(ChatEvent.UPLOAD_FILE_SUCCESS));
             } else if (Constant.UPLOAD_FILE_FAILED.equals(intent.getAction())) {
                 toast(getString(R.string.send_file_failed));
                 String originID = intent.getStringExtra(Constant.MESSAGE_ORIGIN_ID);

@@ -18,6 +18,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.hjq.demo.R;
 import com.hjq.demo.app.AppAdapter;
 import com.hjq.demo.chat.entity.ChatImageBean;
+import com.hjq.demo.http.glide.GlideApp;
 
 import java.io.File;
 

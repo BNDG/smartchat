@@ -36,7 +36,6 @@ import com.hjq.demo.chat.utils.PreferencesUtil;
 import com.hjq.demo.ui.adapter.ImagePreviewMsgAdapter;
 import com.hjq.demo.utils.OpenFileUtils;
 import com.hjq.demo.utils.Trace;
-import com.hjq.http.lifecycle.ApplicationLifecycle;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

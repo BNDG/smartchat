@@ -47,6 +47,9 @@ public class ChatEvent {
     public static final String FILE_DOWNLOAD_COMPLETE = "FILE_DOWNLOAD_COMPLETE";
     // 文件下载进度
     public static final String FILE_DOWNLOAD_PROGRESS = "FILE_DOWNLOAD_PROGRESS";
+    // 文件上传完成
+    public static final String UPLOAD_FILE_SUCCESS = "UPLOAD_FILE_SUCCESS";
+
 
     public String getWhat() {
         return what;

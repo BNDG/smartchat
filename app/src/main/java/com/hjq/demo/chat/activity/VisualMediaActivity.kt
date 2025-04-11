@@ -2,13 +2,9 @@ package com.hjq.demo.chat.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
-import android.widget.TextView
-import androidx.core.app.ActivityOptionsCompat
 import com.bndg.smack.enums.SmartContentType
-import com.chad.library.adapter.base.listener.OnLoadMoreListener
+import com.chad.library.adapter.base.listener.OnUpFetchListener
 import com.hjq.demo.R
 import com.hjq.demo.chat.adapter.VisualMediaAdapter
 import com.hjq.demo.chat.cons.Constant
@@ -17,14 +13,13 @@ import com.hjq.demo.chat.entity.ChatMessage
 import com.hjq.demo.chat.widget.LQRRecyclerView
 import com.hjq.demo.ui.activity.ImagePreviewMsgActivity
 import com.hjq.demo.utils.Trace
-import java.io.File
 
 /**
  * @author r
  * @date 2024/12/25
  * @description Brief description of the file content.
  */
-class VisualMediaActivity : ChatBaseActivity(), OnLoadMoreListener {
+class VisualMediaActivity : ChatBaseActivity(), OnUpFetchListener {
     private val rvList: LQRRecyclerView by lazy { findViewById(R.id.rv_list) }
     private var adapter: VisualMediaAdapter = VisualMediaAdapter(mutableListOf())
     private var conversationId: String? = null
@@ -34,7 +29,7 @@ class VisualMediaActivity : ChatBaseActivity(), OnLoadMoreListener {
     }
 
     override fun initView() {
-        findViewById<TextView>(R.id.tv_title).text = getString(R.string.image)
+
     }
 
     override fun initData() {
@@ -42,13 +37,6 @@ class VisualMediaActivity : ChatBaseActivity(), OnLoadMoreListener {
         adapter.setOnItemClickListener { _, imgView, position ->
             val item = adapter.getItem(position)
             if (item.messageType == SmartContentType.IMAGE) {
-                val uri = if (!TextUtils.isEmpty(item.fileLocalPath)) {
-                    // 本地读
-                    Uri.fromFile(File(item.fileLocalPath))
-                } else {
-                    // 网络获取
-                    Uri.parse(item.messageContent)
-                }
                 // 生成转场动画的bundle对象
                 val bundle = Bundle()
                 // 如果有参数传递，可以这么添加
@@ -67,16 +55,13 @@ class VisualMediaActivity : ChatBaseActivity(), OnLoadMoreListener {
     fun initLoadMore() {
         adapter.let {
             it.animationEnable = true
-            it.loadMoreModule.setOnLoadMoreListener(this)
-            it.loadMoreModule.isAutoLoadMore = true
-            it.loadMoreModule.isEnableLoadMoreIfNotFullPage = false
+            it.upFetchModule.setOnUpFetchListener(this)
         }
     }
 
-    override fun onLoadMore() {
+    override fun onUpFetch() {
         searchRecord(false)
     }
-
     private fun searchRecord(isRefresh: Boolean = true) {
         if (isRefresh) {
             pageCount = 0
@@ -86,18 +71,20 @@ class VisualMediaActivity : ChatBaseActivity(), OnLoadMoreListener {
             pageCount,
             object : MessageDao.MessageDaoCallback {
                 override fun getSearchMessages(chatMessages: MutableList<ChatMessage>?) {
+                    Trace.d(">>>>", "d: $pageCount ${chatMessages?.size}")
                     chatMessages?.let {
                         if (isRefresh) {
                             adapter.setList(it)
+                            rvList.scrollToPosition(it.size - 1)
                         } else {
-                            adapter.addData(it)
+                            adapter.addData(0, it)
                         }
-                        adapter.loadMoreModule.isEnableLoadMore = true
                         if (chatMessages.size < MessageDao.SEARCH_PAGE_SIZE) {
                             Trace.d("loadMoreEnd")
-                            adapter.loadMoreModule.loadMoreEnd(true)
+                            adapter.upFetchModule.isUpFetchEnable = false
+                            adapter.upFetchModule.isUpFetching = false
                         } else {
-                            adapter.loadMoreModule.loadMoreComplete()
+                            adapter.upFetchModule.isUpFetchEnable = true
                             pageCount++
                         }
                     }
@@ -118,4 +105,5 @@ class VisualMediaActivity : ChatBaseActivity(), OnLoadMoreListener {
             context.startActivity(intent)
         }
     }
+
 }

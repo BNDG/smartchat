@@ -59,6 +59,7 @@ import com.hjq.demo.chat.widget.selecttext.SelectTextDialog;
 import com.hjq.demo.chat.widget.selecttext.SelectTextEvent;
 import com.hjq.demo.chat.widget.selecttext.SelectTextEventBus;
 import com.hjq.demo.chat.widget.selecttext.SelectTextHelper;
+import com.hjq.demo.http.glide.GlideApp;
 import com.hjq.demo.manager.ActivityManager;
 import com.hjq.demo.ui.activity.ImagePreviewMsgActivity;
 import com.hjq.demo.ui.dialog.MessageDialog;

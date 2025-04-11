@@ -632,8 +632,8 @@
     <string name="reject">Reject</string>
     <string name="search_label">Search:</string>
     <string name="not_open_yet">Not open yet</string>
-    <string name="privacy_agreement_dialog">In order to use this application, we need to collect and use some personal information.\n\n Please read our %s carefully to understand how we will handle your information.</string>
-    <string name="privacy_agreement_name">Privacy Policy</string>
+    <string name="privacy_agreement_dialog">sample tips.\n\n sample tips %s sample tips.</string>
+    <string name="privacy_agreement_name">bing</string>
     <string name="quote">Quote</string>
     <string name="my_group_nick">My nickname in the group</string>
     <string name="group_administrator">Group Administrator</string>

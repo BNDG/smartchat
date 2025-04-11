@@ -1,13 +1,14 @@
 ### 一个简单的 XMPP Android客户端
 
-> 本项目是为了学习 XMPP 协议而写的一个简单的app，实现了一些基本的聊天功能，为了使用习惯，UI上参照了某著名聊天。
+> 本项目是为了学习 XMPP 协议而写的一个app，实现了一些基本聊天功能，UI上参照了著名聊天。
 
 #### 下载链接
-https://wwhq.lanzouu.com/iH1Zi2sg1mid
-密码:fi54
-#### 推荐客户端
+https://wwhq.lanzouu.com/iq49O2t8x0ra
+密码:c8rp
+#### 推荐XMPP客户端
 
 - [Conversations](https://codeberg.org/iNPUTmice/Conversations) 稳定性好，功能完善，更新及时。只是UI操作和国内的聊天软件不同，需要习惯。
+- [Monocles](https://f-droid.org/packages/de.monocles.chat/) 基于 Cheogram 和 Conversations，但有很多变化和附加功能。
 - [Xabber](https://github.com/redsolution/xabber-android) 老牌客户端，支持web ios android，虽然好久没更新但最近说有新版本。
 
 #### 简介
@@ -19,13 +20,15 @@ https://wwhq.lanzouu.com/iH1Zi2sg1mid
 #### 实现的功能
 > 登陆时如果服务器是国外的可能会用时一二十秒。会不稳定。
 - 登陆、注册（注册得看服务器是否开放了注册，建议去对应的平台上注册）
-- 单聊、群聊、群成员的管理等
-- 添加好友、好友管理等
-- 发送文字、图片、文件消息
-- 图片编辑、录制视频、录制语音
-- 搜索频道
+- 搜索好友(需要对方真实的jid)、好友的添加、删除、拉黑、在线状态等
+- 单聊、群聊、群信息修改、群成员管理等
+- 发送文字、图片、语音、文件、名片消息
+- 图片编辑、录制视频
+- 聊天记录搜索
+- 会话置顶、免打扰
+- 搜索公共频道
 - 个人名片修改昵称、头像
-- 会话管理
+- 多语言
 - omemo(未完善)
 
 #### 一些公共的 XMPP 服务器

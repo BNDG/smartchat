@@ -632,8 +632,8 @@
     <string name="reject">拒接</string>
     <string name="search_label">搜索:</string>
     <string name="not_open_yet">暂未开放</string>
-    <string name="privacy_agreement_dialog">为了使用本应用，我们需要收集和使用一些个人信息。\n\n 请仔细阅读我们的%s，了解我们会如何处理您的信息。</string>
-    <string name="privacy_agreement_name">《隐私政策》</string>
+    <string name="privacy_agreement_dialog">项目用到了友盟统计和bugly收集。\n\n 搜索一下%s，了解友盟和bugly。</string>
+    <string name="privacy_agreement_name">《bing搜索》</string>
     <string name="quote">引用</string>
     <string name="my_group_nick">我在群里的昵称</string>
     <string name="group_administrator">群管理员</string>

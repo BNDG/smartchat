@@ -5,7 +5,7 @@ import android.text.TextUtils
 import com.bndg.smack.enums.SmartContentType
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.module.LoadMoreModule
+import com.chad.library.adapter.base.module.UpFetchModule
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.hjq.demo.R
 import com.hjq.demo.chat.entity.ChatMessage
@@ -18,7 +18,7 @@ import java.io.File
  */
 class VisualMediaAdapter(data: MutableList<ChatMessage>) :
     BaseQuickAdapter<ChatMessage, BaseViewHolder>(R.layout.item_visual_media, data),
-    LoadMoreModule {
+    UpFetchModule {
     override fun convert(holder: BaseViewHolder, chatMessage: ChatMessage) {
         val width = (holder.itemView.context.resources.displayMetrics.widthPixels / 4)
         val layoutParams = holder.itemView.layoutParams
@@ -33,9 +33,11 @@ class VisualMediaAdapter(data: MutableList<ChatMessage>) :
                 // 网络获取
                 Uri.parse(chatMessage.getMessageContent())
             }
+
             // centerCrop 图片变形
             Glide.with(context)
                 .load(uri)
+                .centerCrop()
                 .into(holder.getView(R.id.sdv_image_content))
         }
     }
